@@ -5,6 +5,11 @@
       {
         "sender": "Someone",
         "amount": "$25",
+        "detected_at": "2026-04-05 23:30:27 EDT"
+      },
+      {
+        "sender": "Someone",
+        "amount": "$25",
         "detected_at": "2026-04-05 23:28:18 EDT"
       },
       {
