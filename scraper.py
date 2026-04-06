@@ -13,6 +13,8 @@ from zoneinfo import ZoneInfo
 load_dotenv()
 
 # ─── Configuration ──────────────────────────────────────────────────────────────
+ENABLE_TWITTER_POSTING = False  # Master kill switch. Set to True to reactivate tweeting.
+
 PROFILES_TO_TRACK = [
     {
         "username": "alquis",
@@ -182,17 +184,12 @@ def process_profile(profile, all_states, target_timezone):
     hist_sigs = [(item['sender'], item['amount']) for item in stored_history]
 
     # 3. SEQUENCE PATTERN MATCHING
-    # Instead of counting occurrences, we look for where the API sequence lines up perfectly
-    # with the top of our history. This flawlessly handles duplicate sends.
     new_sends_to_process = []
     
     for i in range(len(api_sigs) + 1):
-        # We slice the API from index 'i' to the end
         api_slice = api_sigs[i:]
-        # We slice the history to match the length of our API slice
         hist_slice = hist_sigs[:len(api_slice)]
         
-        # If the sequences match exactly, everything before index 'i' in the API is new!
         if api_slice == hist_slice:
             new_sends_to_process = recent_sends_api[:i]
             break
@@ -212,51 +209,51 @@ def process_profile(profile, all_states, target_timezone):
         send['detected_at'] = timestamp_str
 
     # 5. Prepend to history (Newest at TOP)
-    # new_sends_to_process is perfectly ordered Newest -> Oldest, same as our file.
-    # We simply add it to the front of our existing history.
     updated_history = new_sends_to_process + stored_history
     
     user_state["sends"] = updated_history
     all_states[username] = user_state
 
-    # 6. Tweet
-    # We create a reversed copy of our new sends so we tweet chronologically (Oldest first)
-    tweet_list = list(reversed(new_sends_to_process))
-    tweet_counts = {}
-    
-    tweets_succeeded = True
-    for send in tweet_list:
-        base_text = profile["tweet_message"].format(
-            amount=send['amount'],
-            sender_name=send['sender'],
-            est_time=time_str_short
-        )
+    # 6. Tweet (Deactivated via toggle)
+    if ENABLE_TWITTER_POSTING:
+        tweet_list = list(reversed(new_sends_to_process))
+        tweet_counts = {}
         
-        final_message = base_text
-        
-        # Jitter duplicate text protection
-        tweet_counts[base_text] = tweet_counts.get(base_text, 0) + 1
-        if tweet_counts[base_text] > 1:
-            marker = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz', k=2))
-            final_message += f" [{marker}]"
+        tweets_succeeded = True
+        for send in tweet_list:
+            base_text = profile["tweet_message"].format(
+                amount=send['amount'],
+                sender_name=send['sender'],
+                est_time=time_str_short
+            )
+            
+            final_message = base_text
+            
+            # Jitter duplicate text protection
+            tweet_counts[base_text] = tweet_counts.get(base_text, 0) + 1
+            if tweet_counts[base_text] > 1:
+                marker = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz', k=2))
+                final_message += f" [{marker}]"
 
-        print(f"  → Attempting tweet: {final_message}")
+            print(f"  → Attempting tweet: {final_message}")
 
-        if not post_to_twitter(final_message):
-            print("  → Tweet failed (continuing; state already saved)")
-            tweets_succeeded = False
+            if not post_to_twitter(final_message):
+                print("  → Tweet failed (continuing; state already saved)")
+                tweets_succeeded = False
 
-        time.sleep(random.uniform(10, 22))
+            time.sleep(random.uniform(10, 22))
 
-    if tweets_succeeded:
-        print(f"All new tweets succeeded for {username}")
+        if tweets_succeeded:
+            print(f"All new tweets succeeded for {username}")
+    else:
+        print(f"  → Twitter posting is disabled. Data saved locally.")
 
     return True
 
 
 # ─── Main ───────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    print("Starting sent.bio → Twitter scraper (Sequence Matching Mode)...")
+    print("Starting sent.bio scraper (Sequence Matching Mode)...")
     all_states = read_state()
     global_state_changed = False
     tz_est = ZoneInfo("America/New_York")
