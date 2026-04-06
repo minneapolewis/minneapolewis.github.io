@@ -4,6 +4,11 @@
     "sends": [
       {
         "sender": "Someone",
+        "amount": "$25",
+        "detected_at": "2026-04-05 23:28:18 EDT"
+      },
+      {
+        "sender": "Someone",
         "amount": "$15.55",
         "detected_at": "2026-04-05 17:40:21 EDT"
       },
