@@ -358,7 +358,7 @@
       }
     }
 
-    // --- Archive Search ---
+   // --- Archive Search ---
     async function executeSearch() {
       const query = document.getElementById("searchInput").value.trim();
       const grid = document.getElementById("searchResultsGrid");
@@ -366,10 +366,18 @@
 
       grid.innerHTML = `<div style="font-size:1.5rem; color:var(--tos-red);">SCANNING...</div>`;
 
-      // Search the 'documents' table
-      const { data, error } = await db.from('documents').select('*').ilike('ocr_text', `%${query}%`);
+      // Use .ilike() for a wildcard search to catch everything
+      const { data, error } = await db
+        .from('documents')
+        .select('*')
+        .ilike('ocr_text', `%${query}%`);
 
-      if (error || !data || data.length === 0) {
+      if (error) {
+        grid.innerHTML = `<div style="font-size:1.5rem; color:var(--tos-red);">DB ERROR: ${error.message}</div>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
         grid.innerHTML = `<div style="font-size:1.5rem; color:var(--tos-red);">NO MATCHES FOUND.</div>`;
         return;
       }
