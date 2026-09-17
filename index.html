@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Online Temple - Archive System</title>
+  <title>minne@polewis</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -263,56 +263,75 @@
 
   </div>
 
-  <!-- JAVASCRIPT: Navigation & Database Logic -->
+ <!-- JAVASCRIPT: Navigation & Database Logic -->
   <script>
+    // --- Supabase Setup ---
+    const SUPABASE_URL = "https://workywiidpruyjmxlodk.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_QP3KTKnmSZr7OVc8Yoka5w_VcB48hNV";
+
+    // 1. THIS is the line that actually turns on the connection!
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     // --- Navigation Logic ---
     function navigate(pageId, route) {
-      // 1. Update the flashing text and route marquee
       document.getElementById('blinkerText').innerText = pageId;
       document.getElementById('routeMarquee').innerText = `ROUTE: ${route}`;
 
-      // 2. Hide all pages, show the requested page
       document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
       document.getElementById('page-' + pageId).classList.add('active');
 
-      // 3. Update the active class on the navbar
       const links = document.querySelectorAll('.tos-navbar a');
       links.forEach(link => {
         if(link.innerText === pageId) link.classList.add('active');
         else link.classList.remove('active');
       });
+
+      // If they click the Offerings tab, fetch the latest posts from the database!
+      if (pageId === 'OFFERINGS') {
+        fetchOfferings();
+      }
     }
 
-    // --- Supabase Setup ---
-    const SUPABASE_URL = "https://workywiidpruyjmxlodk.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_QP3KTKnmSZr7OVc8Yoka5w_VcB48hNV";
+    // --- Fetch Offerings from Database ---
+    async function fetchOfferings() {
+      const grid = document.getElementById("offeringsGrid");
+      grid.innerHTML = `<div style="font-size:1.5rem; color:var(--tos-red);">LOADING COMMUNIQUES...</div>`;
 
-    // --- Archive Search ---
-    async function executeSearch() {
-      const query = document.getElementById("searchInput").value.trim();
-      const grid = document.getElementById("searchResultsGrid");
-      if (!query) return;
+      // Pull the latest 50 posts from Supabase, newest first
+      const { data, error } = await db
+        .from('offerings')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50);
 
-      grid.innerHTML = `<div style="font-size:1.5rem; color:var(--tos-red);">SCANNING...</div>`;
+      if (error) {
+        grid.innerHTML = `<div style="color:var(--tos-red);">ERROR: ${error.message}</div>`;
+        return;
+      }
 
-      // Example DB call:
-      /*
-      const { data, error } = await db.from('documents').select('*').textSearch('ocr_text', query);
-      if (error || !data || data.length === 0) { grid.innerHTML = `NO MATCHES.`; return; }
-      */
+      if (!data || data.length === 0) {
+        grid.innerHTML = `<div style="color:var(--tos-red);">NO OFFERINGS YET. BE THE FIRST.</div>`;
+        return;
+      }
 
-      // Mock result for visual testing:
-      grid.innerHTML = `
+      // Render them into the TempleOS cards
+      grid.innerHTML = data.map((post) => {
+        // Format the date nicely
+        const dateStr = new Date(post.created_at).toLocaleString();
+
+        return `
         <div class="tos-card">
           <div class="card-header">
-            <span class="card-id">#102</span>
-            <span class="tos-badge-red">(DB)</span>
+            <span class="card-id">#${post.id}</span>
+            <span class="tos-badge-red">(Anon)</span>
           </div>
-          <div><span class="tos-badge-black">-- OCR MATCH --</span></div>
-          <div class="card-timestamp">Found in Archive</div>
-          <div class="card-body-clean">Mock search result for "${query}". Replace with actual Supabase data mapping.</div>
-          <div class="card-green-data">[ OPEN FILE ]</div>
-        </div>`;
+          <div><span class="tos-badge-black">-- USER OFFERING --</span></div>
+          <div class="card-timestamp">${dateStr}</div>
+          <div class="card-body-clean">${post.message}</div>
+          <div class="card-green-data">- ${post.author_name}</div>
+        </div>
+        `;
+      }).join('');
     }
 
     // --- Anonymous Post Submission ---
@@ -325,14 +344,52 @@
         return;
       }
 
-      // Example DB insertion (requires RLS to be set up allowing anonymous inserts)
-      /*
-      await db.from('offerings').insert([{ author_name: name, message: text }]);
-      fetchOfferings(); // Refresh the grid
-      */
+      // Push the data to the 'offerings' table in Supabase
+      const { error } = await db.from('offerings').insert([
+        { author_name: name, message: text }
+      ]);
 
-      alert(`Offering submitted by ${name}! (Connect Supabase to save)`);
-      document.getElementById("offeringText").value = ''; // clear box
+      if (error) {
+        alert("Database Error: " + error.message);
+      } else {
+        // Clear the text box and refresh the grid to show the new post
+        document.getElementById("offeringText").value = '';
+        fetchOfferings();
+      }
+    }
+
+    // --- Archive Search ---
+    async function executeSearch() {
+      const query = document.getElementById("searchInput").value.trim();
+      const grid = document.getElementById("searchResultsGrid");
+      if (!query) return;
+
+      grid.innerHTML = `<div style="font-size:1.5rem; color:var(--tos-red);">SCANNING...</div>`;
+
+      // Search the 'documents' table
+      const { data, error } = await db.from('documents').select('*').textSearch('ocr_text', query);
+
+      if (error || !data || data.length === 0) {
+        grid.innerHTML = `<div style="font-size:1.5rem; color:var(--tos-red);">NO MATCHES FOUND.</div>`;
+        return;
+      }
+
+      // Render the matches
+      grid.innerHTML = data.map(doc => `
+        <div class="tos-card">
+          <div class="card-header">
+            <span class="card-id">#${doc.id}</span>
+            <span class="tos-badge-red">(DB)</span>
+          </div>
+          <div><span class="tos-badge-black">-- ${doc.type || 'OCR MATCH'} --</span></div>
+          <div class="card-timestamp">Found in Archive</div>
+          <div class="card-body-clean">${doc.snippet || ''}</div>
+          <div class="card-green-data">
+            <a href="${doc.file_url}" target="_blank" style="color:var(--tos-green); text-decoration:none;">
+              [ OPEN FILE ]
+            </a>
+          </div>
+        </div>`).join('');
     }
   </script>
 </body>
