@@ -18,12 +18,16 @@
       --tos-red: #AA0000;
       --tos-green: #00AA00;
       --tos-black: #000000;
+
+      /* Retro font strictly for Headers/Nav */
       --font-pixel: 'VT323', monospace;
+      /* Clean monospace for Body/Cards/Inputs */
+      --font-clean: 'Courier New', Courier, monospace;
     }
 
     * { box-sizing: border-box; }
 
-    /* --- INVERTED TEXT SELECTION (Forced) --- */
+    /* --- DOS/TERMINAL TEXT SELECTION --- */
     *::selection {
       background-color: var(--tos-black) !important;
       color: var(--tos-bg) !important;
@@ -33,32 +37,33 @@
       color: var(--tos-bg) !important;
     }
 
+    /* Base Body - Uses Clean Monospace */
     body {
       background-color: var(--tos-bg);
       color: var(--tos-black);
-      font-family: var(--font-pixel);
+      font-family: var(--font-clean);
+      font-size: 1rem;
       margin: 0;
       padding: 0;
-      font-size: 1.4rem;
     }
 
-    /* --- NAVBAR --- */
+    /* --- NAVBAR (Pixel Font) --- */
     .tos-navbar {
       background-color: var(--tos-blue);
       padding: 4px 16px;
       display: flex;
       gap: 24px;
+      font-family: var(--font-pixel);
     }
-
     .tos-navbar a {
       color: var(--tos-yellow);
       text-decoration: none;
+      font-size: 1.4rem;
       letter-spacing: 1px;
       text-transform: uppercase;
       padding: 0 4px;
       cursor: pointer;
     }
-
     .tos-navbar a:hover { text-decoration: underline; }
     .tos-navbar a.active {
       background-color: var(--tos-yellow);
@@ -75,8 +80,10 @@
       position: relative;
     }
 
+    /* --- DYNAMIC BORDERS (Pixel Font) --- */
     .tos-home-blinker {
       color: var(--tos-blue);
+      font-family: var(--font-pixel);
       font-size: 1.3rem;
       position: absolute;
       top: -14px;
@@ -86,15 +93,14 @@
       animation: crtBlink 1s steps(1) infinite;
       text-transform: uppercase;
     }
-
     @keyframes crtBlink {
       0%, 49% { opacity: 1; }
       50%, 100% { opacity: 0; }
     }
-
     .tos-route-pill {
       background-color: var(--tos-blue);
       color: white;
+      font-family: var(--font-pixel);
       font-size: 1.1rem;
       position: absolute;
       top: -12px;
@@ -106,11 +112,10 @@
       align-items: center;
       overflow: hidden;
     }
-
     .tos-route-pill marquee { width: 100%; line-height: 1; }
-
     .tos-left-vertical-text {
       color: var(--tos-blue);
+      font-family: var(--font-pixel);
       font-size: 1.1rem;
       position: absolute;
       top: 10px;
@@ -128,20 +133,27 @@
     .page-section { display: none; text-align: left; }
     .page-section.active { display: block; }
 
-    /* Only Home is centered */
+    /* ONLY HOME IS CENTERED */
     #page-HOME { text-align: center; }
 
-    /* Hero / General styling */
-    .hero-section { margin-top: 20px; line-height: 1.4; }
-    .hero-globe { width: 128px; height: 128px; image-rendering: pixelated; margin-bottom: 16px; }
+    /* General text coloring */
     .txt-red { color: var(--tos-red); text-decoration: none; }
     .txt-red:hover { text-decoration: underline; }
     .txt-green { color: var(--tos-green); }
 
-    /* Inputs & Buttons */
-    .tos-input, .tos-textarea {
+    /* Pixel Headers */
+    .pixel-header {
       font-family: var(--font-pixel);
-      font-size: 1.4rem;
+      font-size: 2.2rem;
+      font-weight: normal;
+      color: var(--tos-red);
+      margin: 0 0 16px 0;
+    }
+
+    /* --- FORM ELEMENTS (Clean Monospace) --- */
+    .tos-input, .tos-textarea, .tos-select {
+      font-family: var(--font-clean);
+      font-size: 1rem;
       border: 2px solid var(--tos-black);
       padding: 4px 8px;
       outline: none;
@@ -151,71 +163,80 @@
     .tos-textarea { resize: vertical; min-height: 100px; }
 
     .tos-btn {
-      font-family: var(--font-pixel);
-      font-size: 1.4rem;
+      font-family: var(--font-clean);
+      font-size: 1rem;
       background: white;
       border: 2px solid var(--tos-black);
       cursor: pointer;
       padding: 4px 12px;
+      font-weight: bold;
     }
     .tos-btn:hover { background: var(--tos-black); color: white; }
 
-    /* --- RESULTS / CARDS (1:1 TEMPLEOS REPLICA) --- */
+    /* --- HEADERS (Pixel Font) --- */
     .section-title {
+      font-family: var(--font-pixel);
       color: var(--tos-red);
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       border-bottom: 1px solid var(--tos-red);
-      margin-bottom: 16px;
+      margin: 24px 0 16px 0;
       padding-bottom: 4px;
     }
 
-    /* Layout grid for cards */
+    /* --- RESULTS / CARDS --- */
     .results-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
       gap: 16px;
+      text-align: left; /* Ensure cards align left even on home page */
     }
-
     .tos-card {
       border: 2px solid var(--tos-black);
       background: white;
       padding: 12px;
     }
     .card-header {
-      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
     }
     .card-id {
       color: var(--tos-red);
-      font-size: 1.6rem;
+      font-size: 1.1rem;
+      font-weight: bold;
       text-decoration: underline;
+    }
+    .tos-badge-red {
+      background-color: var(--tos-red);
+      color: white;
+      padding: 2px 6px;
+      font-size: 0.9rem;
     }
     .tos-badge-black {
       background-color: var(--tos-black);
       color: #FFFFFF;
-      font-size: 1.2rem;
-      padding: 1px 6px;
+      font-size: 1rem;
+      padding: 2px 8px;
       display: inline-block;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
     .card-timestamp {
-      color: #777777;
-      font-family: var(--font-pixel);
-      font-size: 1.3rem;
+      color: #333333;
+      font-size: 0.95rem;
       margin-bottom: 16px;
     }
     .card-body-clean {
-      font-family: var(--font-pixel);
-      font-size: 1.4rem;
-      line-height: 1.2;
+      font-size: 1rem;
+      line-height: 1.4;
       color: var(--tos-black);
       white-space: pre-wrap;
     }
     .card-green-data {
       color: var(--tos-green);
-      font-family: var(--font-pixel);
-      font-size: 1.3rem;
+      font-size: 0.95rem;
+      margin-top: 16px;
       word-break: break-all;
-      margin-top: 12px;
     }
   </style>
 </head>
@@ -243,9 +264,26 @@
     <!-- PAGE: HOME -->
     <!-- ========================================== -->
     <div id="page-HOME" class="page-section active">
-      <div class="hero-section">
-        <img src="globe.png" alt="Globe" class="hero-globe" onerror="this.style.display='none'" />
-        <h1 class="txt-red" style="font-size: 2rem; margin: 0 0 16px 0; font-weight: normal;">Welcome to Minneapolewis!</h1>
+      <div style="margin-top: 20px; line-height: 1.4;">
+        <img src="globe.png" alt="Globe" style="width: 128px; height: 128px; image-rendering: pixelated; margin-bottom: 16px;" onerror="this.style.display='none'" />
+
+        <h1 class="pixel-header">Welcome to the Online Temple!</h1>
+
+        <p style="margin: 0 0 8px 0;">Divine Intellect</p>
+        <p style="margin: 0 0 8px 0;">A place to do offerings to talk to God.</p>
+        <p style="margin: 0 0 8px 0;"><a href="#" class="txt-red">Deut. 16:16</a> You have to do 3 offerings a year in the temple.</p>
+        <p style="margin: 0 0 8px 0;">Once we have the divine authority of God everyone will be doing offerings.</p>
+
+        <p style="margin-top: 16px;"><a href="#" class="txt-red" style="text-decoration: underline;">List of Demands</a></p>
+      </div>
+
+      <div class="section-title" style="text-align: left; margin-top: 40px;">Latest Offerings</div>
+      <div class="results-grid" id="homeOfferingsGrid">
+        <!-- Loaded dynamically via fetchOfferings() -->
+      </div>
+
+      <div style="margin-top: 30px;">
+        <button class="tos-btn" style="border: 3px double var(--tos-black); padding: 6px 20px;" onclick="navigate('OFFERINGS', '/offerings')">[ SEE ALL OFFERINGS ]</button>
       </div>
     </div>
 
@@ -253,11 +291,22 @@
     <!-- PAGE: ARCHIVE (Search Database) -->
     <!-- ========================================== -->
     <div id="page-ARCHIVE" class="page-section">
-      <div style="margin: 20px 0 40px 0;">
-        <input type="text" id="searchInput" class="tos-input" style="max-width: 500px;" placeholder="Search OCR archive..." />
-        <br>
+      <h2 class="pixel-header">Archive</h2>
+
+      <div style="margin: 20px 0 40px 0; max-width: 600px;">
+        <input type="text" id="searchInput" class="tos-input" placeholder='Search OCR archive... (supports "exact match" and -exclude)' />
+
+        <!-- Filter Area -->
+        <div style="margin: 8px 0 16px 0; font-size: 0.95rem;">
+          <strong>Filter by:</strong>
+          <label style="margin-left: 8px;"><input type="radio" name="searchFilter" value="ALL" checked> All</label>
+          <label style="margin-left: 8px;"><input type="radio" name="searchFilter" value="VIDEO"> Videos</label>
+          <label style="margin-left: 8px;"><input type="radio" name="searchFilter" value="DOCUMENT"> Documents</label>
+        </div>
+
         <button class="tos-btn" onclick="executeSearch()">[ SEARCH ]</button>
       </div>
+
       <div class="section-title">Archive Search Results</div>
       <div class="results-grid" id="searchResultsGrid">
         <!-- Results will render here -->
@@ -265,42 +314,28 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- PAGE: OFFERINGS (Authentic Replica) -->
+    <!-- PAGE: OFFERINGS -->
     <!-- ========================================== -->
     <div id="page-OFFERINGS" class="page-section">
 
-      <h2 class="txt-red" style="font-size: 2rem; margin: 0 0 12px 0; font-weight: normal;">New Offering</h2>
+      <h2 class="pixel-header" style="margin-bottom: 8px;">User Offerings</h2>
+      <p style="margin: 0 0 24px 0;">All offerings are submitted by anonymous users.</p>
 
-      <p class="txt-red" style="margin: 0 0 16px 0;">Entertain God! Remember Mission Number One: Entertain the F*ck out of Mr. God!</p>
-
-      <p style="margin: 0 0 16px 0;">This uses <b>true entropy sources</b> for <b>truly random numbers</b> to get primordial decision tree numbers influenced by your offering and puppeting by the <a href="#" class="txt-red">Holy Spirit</a> .</p>
-
-      <p style="margin: 0 0 16px 0;">The CIA loves to spread that the Temple's oracle uses <b>PSEUDO</b> random number generators but it has <b>always</b> used true entropy sources intentionally to tap into synchronicity, going beyond causality as we often think of it.</p>
-
-      <p style="margin: 0 0 16px 0;">Think of it this way because this is what we're familiar with. The world has been planned out by a super artificial intelligence.</p>
-
-      <hr style="border: none; border-top: 1px solid var(--tos-black); margin: 24px 0;">
-
-      <p style="margin: 0 0 8px 0;"><a href="#" class="txt-red">Deut. 16:16</a> You have to do 3 offerings a year.</p>
-      <p style="margin: 0 0 4px 0;">• If you do an Offering, He'll talk to you.</p>
-      <p style="margin: 0 0 24px 0;">• If you talk to God, He'll talk to you.</p>
-
-      <!-- Exact Form Box Replica -->
-      <div style="border: 2px solid var(--tos-black); padding: 12px; margin-bottom: 40px; max-width: 800px;">
-
+      <!-- Submission Form Box -->
+      <div style="border: 2px solid var(--tos-black); padding: 16px; margin-bottom: 40px; max-width: 800px; background: white;">
         <div style="font-weight: bold; margin-bottom: 4px;">Offering</div>
         <textarea id="offeringText" class="tos-textarea" placeholder="Write your offering..."></textarea>
 
-        <div style="font-size: 1.1rem; font-style: italic; margin-bottom: 4px;">Remember: "You get out of it what you put into it".</div>
-        <div style="font-size: 1.1rem; margin-bottom: 16px;"><b>Example:</b> "Make a joke that's genuinely funny"</div>
+        <div style="font-size: 0.85rem; font-style: italic; margin-bottom: 4px;">Remember: "You get out of it what you put into it".</div>
+        <div style="font-size: 0.85rem; margin-bottom: 16px;"><b>Example:</b> "Make a joke that's genuinely funny"</div>
 
         <div style="font-weight: bold; margin-bottom: 4px;">Type</div>
-        <select class="tos-input" style="padding: 2px; margin-bottom: 16px; width: 100%;">
+        <select class="tos-select">
           <option>God Words</option>
         </select>
 
         <div style="font-weight: bold; margin-bottom: 4px;">Entropy Source</div>
-        <select class="tos-input" style="padding: 2px; margin-bottom: 8px; width: 100%;">
+        <select class="tos-select">
           <option>Timer (microsecond-range stop-watch)</option>
         </select>
 
@@ -310,10 +345,10 @@
         <div class="txt-green" style="margin-bottom: 16px;">Press g to make God words.</div>
         <div style="margin-bottom: 16px;">If this seems like a dud due to a bad offering, discard it. Maybe try to make a joke about it in your next offering.</div>
 
-        <button class="tos-btn" style="border: 3px double var(--tos-green); padding: 4px 16px; font-weight: bold;" onclick="submitOffering()">SUBMIT</button>
+        <button class="tos-btn" style="border: 3px double var(--tos-green);" onclick="submitOffering()">SUBMIT</button>
       </div>
 
-      <div class="section-title">Latest Offerings</div>
+      <div class="section-title">All Offerings</div>
       <div class="results-grid" id="offeringsGrid">
         <!-- Loaded dynamically -->
       </div>
@@ -323,8 +358,8 @@
     <!-- PAGE: ABOUT -->
     <!-- ========================================== -->
     <div id="page-ABOUT" class="page-section">
-      <div class="section-title">About the Temple Archive</div>
-      <div style="font-size: 1.4rem; line-height: 1.4; max-width: 800px;">
+      <h2 class="pixel-header">About</h2>
+      <div style="line-height: 1.4; max-width: 800px;">
         <p>This system was designed to index and archive files and videos, making them fully searchable via an Optical Character Recognition (OCR) pipeline.</p>
         <br>
         <p>The interface pays homage to the design philosophy of TempleOS, prioritizing raw utilitarian layouts, unpretentious controls, and 16-color VGA aesthetics.</p>
@@ -342,9 +377,13 @@
 
     // --- Spinning Entropy Timer ---
     setInterval(() => {
-      // Creates a rapidly changing fake microsecond timestamp to match the visual
-      document.getElementById('timerDisplay').innerText = Date.now() + Math.floor(Math.random() * 1000);
+      if(document.getElementById('timerDisplay')) {
+        document.getElementById('timerDisplay').innerText = Date.now() + Math.floor(Math.random() * 1000);
+      }
     }, 50);
+
+    // Fetch offerings immediately on page load so Home page is populated
+    window.onload = () => { fetchOfferings(); };
 
     // --- Navigation Logic ---
     function navigate(pageId, route) {
@@ -368,7 +407,11 @@
     // --- Fetch Offerings from Database ---
     async function fetchOfferings() {
       const grid = document.getElementById("offeringsGrid");
-      grid.innerHTML = `<div style="font-size:1.5rem; color:var(--tos-red);">LOADING COMMUNIQUES...</div>`;
+      const homeGrid = document.getElementById("homeOfferingsGrid");
+
+      const loadingText = `<div style="font-family:var(--font-pixel); font-size:1.5rem; color:var(--tos-red);">LOADING COMMUNIQUES...</div>`;
+      if(grid) grid.innerHTML = loadingText;
+      if(homeGrid) homeGrid.innerHTML = loadingText;
 
       const { data, error } = await db
         .from('offerings')
@@ -377,84 +420,97 @@
         .limit(50);
 
       if (error) {
-        grid.innerHTML = `<div style="color:var(--tos-red);">ERROR: ${error.message}</div>`;
+        if(grid) grid.innerHTML = `<div style="color:var(--tos-red);">ERROR: ${error.message}</div>`;
         return;
       }
 
       if (!data || data.length === 0) {
-        grid.innerHTML = `<div style="color:var(--tos-red);">NO OFFERINGS YET. BE THE FIRST.</div>`;
+        const emptyMsg = `<div>NO OFFERINGS YET. BE THE FIRST.</div>`;
+        if(grid) grid.innerHTML = emptyMsg;
+        if(homeGrid) homeGrid.innerHTML = emptyMsg;
         return;
       }
 
-      grid.innerHTML = data.map((post) => {
-        // Date format: DD/MM/YYYY, HH:MM:SS
+      // Function to build HTML for a post
+      const buildCard = (post, isAnon) => {
         const dateStr = new Date(post.created_at).toLocaleString('en-GB');
-
-        // Card matches exactly: Red Underlined ID, Black tag, Grey posted text, Black body, NO green text.
+        const badgeHTML = isAnon ? `<span class="tos-badge-red">(Anon)</span>` : '';
         return `
         <div class="tos-card">
           <div class="card-header">
             <span class="card-id">#${post.id}</span>
+            ${badgeHTML}
           </div>
           <div><span class="tos-badge-black">-- USER OFFERING --</span></div>
           <div class="card-timestamp">Posted ${dateStr}</div>
           <div class="card-body-clean">${post.message}</div>
         </div>
         `;
-      }).join('');
+      };
+
+      // Populate Offerings Page (All 50)
+      if(grid) {
+        grid.innerHTML = data.map(post => buildCard(post, true)).join('');
+      }
+
+      // Populate Home Page (Only first 4)
+      if(homeGrid) {
+        homeGrid.innerHTML = data.slice(0, 4).map(post => buildCard(post, true)).join('');
+      }
     }
 
     // --- Anonymous Post Submission ---
     async function submitOffering() {
       const text = document.getElementById("offeringText").value.trim();
+      if (!text) { alert("Please enter a message."); return; }
 
-      if (!text) {
-        alert("Please enter a message.");
-        return;
-      }
-
-      const { error } = await db.from('offerings').insert([
-        { author_name: 'Anonymous', message: text }
-      ]);
+      const { error } = await db.from('offerings').insert([{ author_name: 'Anonymous', message: text }]);
 
       if (error) {
         alert("Database Error: " + error.message);
       } else {
         document.getElementById("offeringText").value = '';
-        fetchOfferings();
+        fetchOfferings(); // Refresh grids
       }
     }
 
-    // --- Archive Search ---
+    // --- Archive Search with Google-style WebSearch ---
     async function executeSearch() {
       const query = document.getElementById("searchInput").value.trim();
+      const filter = document.querySelector('input[name="searchFilter"]:checked').value;
       const grid = document.getElementById("searchResultsGrid");
+
       if (!query) return;
 
-      grid.innerHTML = `<div style="font-size:1.5rem; color:var(--tos-red);">SCANNING...</div>`;
+      grid.innerHTML = `<div style="font-family:var(--font-pixel); font-size:1.5rem; color:var(--tos-red);">SCANNING...</div>`;
 
-      const { data, error } = await db
-        .from('documents')
-        .select('*')
-        .ilike('ocr_text', `%${query}%`);
+      // Build the query using .textSearch with websearch type (allows quotes, minus signs)
+      let dbQuery = db.from('documents').select('*').textSearch('ocr_text', query, { type: 'websearch' });
+
+      // Apply type filter if not 'ALL'
+      if (filter !== 'ALL') {
+        dbQuery = dbQuery.eq('type', filter);
+      }
+
+      const { data, error } = await dbQuery;
 
       if (error) {
-        grid.innerHTML = `<div style="font-size:1.5rem; color:var(--tos-red);">DB ERROR: ${error.message}</div>`;
+        grid.innerHTML = `<div style="color:var(--tos-red);">DB ERROR: ${error.message}</div>`;
         return;
       }
 
       if (!data || data.length === 0) {
-        grid.innerHTML = `<div style="font-size:1.5rem; color:var(--tos-red);">NO MATCHES FOUND.</div>`;
+        grid.innerHTML = `<div style="font-family:var(--font-pixel); font-size:1.5rem; color:var(--tos-red);">NO MATCHES FOUND.</div>`;
         return;
       }
 
       grid.innerHTML = data.map(doc => {
         const dateStr = doc.created_at ? new Date(doc.created_at).toLocaleString('en-GB') : 'Archive';
-
         return `
         <div class="tos-card">
           <div class="card-header">
             <span class="card-id">#${doc.id}</span>
+            <span class="tos-badge-red">(DB)</span>
           </div>
           <div><span class="tos-badge-black">-- ${doc.type || 'OCR MATCH'} --</span></div>
           <div class="card-timestamp">Posted ${dateStr}</div>
