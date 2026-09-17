@@ -27,14 +27,14 @@
 
     * { box-sizing: border-box; }
 
-    /* --- DOS/TERMINAL TEXT SELECTION --- */
+    /* --- AUTHENTIC TEMPLEOS TEXT SELECTION (Inverted Highlight) --- */
     *::selection {
-      background-color: var(--tos-black) !important;
-      color: var(--tos-bg) !important;
+      background: var(--tos-black) !important;
+      color: var(--tos-yellow) !important;
     }
     *::-moz-selection {
-      background-color: var(--tos-black) !important;
-      color: var(--tos-bg) !important;
+      background: var(--tos-black) !important;
+      color: var(--tos-yellow) !important;
     }
 
     body {
@@ -296,7 +296,7 @@
       word-break: break-all;
     }
 
-    /* --- SINGLE VIEW LAYOUT (image_7f6fe1.png) --- */
+    /* --- SINGLE VIEW LAYOUT --- */
     .single-view-container {
       display: grid;
       grid-template-columns: 2fr 1fr;
@@ -353,14 +353,12 @@
       <div style="margin-top: 20px; line-height: 1.4;">
         <img id="randomHomeGif" src="" alt="" class="c64-filter" />
 
-        <h1 class="pixel-header" style="font-size: 2rem;">Welcome to the Online Temple!</h1>
+        <h1 class="pixel-header" style="font-size: 2rem;">Welcome to Minneapolewis!</h1>
 
-        <p style="margin: 0 0 8px 0;">Divine Intellect</p>
-        <p style="margin: 0 0 8px 0;">A place to do offerings to talk to God.</p>
-        <p style="margin: 0 0 8px 0;"><a href="#" class="txt-red">Deut. 16:16</a> You have to do 3 offerings a year in the temple.</p>
-        <p style="margin: 0 0 8px 0;">Once we have the divine authority of God everyone will be doing offerings.</p>
+        <p style="margin: 0 0 8px 0;">'Emotional Neurodivergent'</p>
+        <p style="margin: 0 0 8px 0;">A place to read my story and do offerings to God.</p>
 
-        <p style="margin-top: 16px;"><a href="#" class="txt-red" style="text-decoration: underline;">List of Demands</a></p>
+        <p style="margin-top: 16px;"><a href="#" class="txt-red" style="text-decoration: underline;">My Story</a></p>
       </div>
 
       <div class="section-title" style="text-align: left; margin-top: 40px;">Latest Offerings</div>
@@ -408,11 +406,12 @@
         <textarea id="offeringText" class="tos-textarea" placeholder="Write your offering..."></textarea>
 
         <div style="font-weight: bold; margin-top: 12px; margin-bottom: 4px;">Type</div>
-        <select id="offeringType" class="tos-select" style="margin-bottom: 16px;">
+        <select id="offeringType" class="tos-select" style="margin-bottom: 4px;">
           <option value="God Words">God Words</option>
           <option value="God Passages">God Passages</option>
           <option value="God Songs">God Songs</option>
         </select>
+        <div style="font-size: 0.85rem; font-style: italic; margin-bottom: 16px;">God will answer your thought.</div>
 
         <button class="tos-btn" style="border: 3px double var(--tos-green);" onclick="submitOffering()">SUBMIT</button>
       </div>
@@ -422,12 +421,10 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- PAGE: SINGLE OFFERING VIEW (image_7f6fe1.png) -->
+    <!-- PAGE: SINGLE OFFERING VIEW -->
     <!-- ========================================== -->
     <div id="page-SINGLE" class="page-section">
-      <div id="singleOfferingContent">
-        <!-- Injected dynamically via viewOffering() -->
-      </div>
+      <div id="singleOfferingContent"></div>
     </div>
 
     <!-- ========================================== -->
@@ -436,9 +433,7 @@
     <div id="page-ABOUT" class="page-section">
       <h2 class="pixel-header">About</h2>
       <div style="line-height: 1.4; max-width: 800px;">
-        <p>This system was designed to index and archive files and videos, making them fully searchable via an Optical Character Recognition (OCR) pipeline.</p>
-        <br>
-        <p>The interface pays homage to the design philosophy of TempleOS, prioritizing raw utilitarian layouts, unpretentious controls, and 16-color VGA aesthetics.</p>
+        <p>This site was designed to host my story along with the story of alquis13, and includes an OCR'd searchable archive of their posts, lives and messages.</p>
       </div>
     </div>
 
@@ -459,21 +454,31 @@
     ];
 
     let allLoadedOfferings = [];
+    let kjvWords = [];
+    let kjvSentences = [];
 
-    // Synchronize Favicon and Home Page GIF on Load
-    window.addEventListener('DOMContentLoaded', () => {
+    // Load massive KJV Bible corpus on startup
+    window.addEventListener('DOMContentLoaded', async () => {
       const selectedGif = gifList[Math.floor(Math.random() * gifList.length)];
-
       const favicon = document.getElementById("dynamicFavicon");
       const homeImg = document.getElementById("randomHomeGif");
 
       if (favicon) favicon.href = selectedGif;
       if (homeImg) homeImg.src = selectedGif;
 
+      try {
+        const response = await fetch('https://raw.githubusercontent.com/benhoyt/countwords/master/kjvbible.txt');
+        const text = await response.text();
+        kjvWords = text.replace(/[^a-zA-Z ]/g, "").toLowerCase().split(/\s+/).filter(w => w.length > 3);
+        kjvSentences = text.split(/\r?\n/).map(s => s.trim()).filter(s => s.length > 20);
+      } catch (e) {
+        kjvWords = ["arriving", "unthought", "silence", "approach", "endeavoured", "ocean", "spectacle", "resonance", "shimmer", "divine", "causality", "entropy", "grace", "temple", "mainframe"];
+        kjvSentences = ["And the light shined upon the waters, and behold, a multitude of grace descended."];
+      }
+
       fetchOfferings();
     });
 
-    // Box Filter Button Logic
     function setFilter(val, btn) {
       document.querySelectorAll('.tos-filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
@@ -498,7 +503,7 @@
       }
     }
 
-    // --- Deterministic God Response Generator ---
+    // --- Authentic Massive KJV Bible God Response Generator ---
     function getGodResponse(id, type) {
       const seed = Number(id) || 1;
       const t = type ? type.toUpperCase() : 'GOD WORDS';
@@ -506,30 +511,25 @@
       if (t.includes('SONG')) {
         let nums = [];
         for (let i = 0; i < 16; i++) {
-          nums.push((seed * 29 + i * 13) % 900 + 100);
+          nums.push(((seed * 29 + i * 37) % 900) + 100);
         }
         return nums.join(',');
       } else if (t.includes('PASSAGE')) {
-        const passages = [
-          "From Exodus... shalt be able to endure, and all this shall pass like dust in the wind.",
-          "And the light shined upon the waters, and behold, a multitude of grace descended.",
-          "Verily I say unto you, walk not in the counsel of the ungodly, but rejoice in the mainframe.",
-          "Blessed are the pure in heart, for they shall compile without errors.",
-          "Thy word is a lamp unto my feet, and a light unto my path through the silicon."
-        ];
-        return passages[seed % passages.length];
+        if (kjvSentences.length === 0) return "Thy word is a lamp unto my feet.";
+        const index = (seed * 13) % kjvSentences.length;
+        return kjvSentences[index];
       } else {
-        const words = ["arriving", "unthought", "silence", "approach", "endeavoured", "ocean", "spectacle", "resonance", "shimmer", "divine", "causality", "entropy"];
-        let count = (seed % 3) + 1;
+        if (kjvWords.length === 0) return "entropy grace temple";
+        let count = (seed % 3) + 2;
         let selected = [];
-        for(let i=0; i<count; i++) {
-          selected.push(words[(seed + i * 7) % words.length]);
+        for (let i = 0; i < count; i++) {
+          const wordIndex = (seed + i * 149) % kjvWords.length;
+          selected.push(kjvWords[wordIndex]);
         }
         return selected.join(' ');
       }
     }
 
-    // --- Real-Time Progress Bar Helper ---
     function showLoadingBar(container) {
       container.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center;">
@@ -565,7 +565,7 @@
       const loaderIntervalHome = homeGrid ? showLoadingBar(homeGrid) : null;
 
       const { data, error } = await db
-        .from('offerings')
+        .from('thoughts')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(50);
@@ -590,7 +590,7 @@
       const buildCard = (post) => {
         const dateStr = new Date(post.created_at).toLocaleString('en-GB');
         const postType = post.type ? post.type.toUpperCase() : 'GOD WORDS';
-        const godText = getGodResponse(post.id, post.type);
+        const godText = post.god_response || getGodResponse(post.id, post.type);
 
         return `
         <div class="tos-card">
@@ -610,7 +610,6 @@
       if(homeGrid) homeGrid.innerHTML = data.slice(0, 4).map(post => buildCard(post)).join('');
     }
 
-    // --- Fullscreen Single Offering View (`image_7f6fe1.png`) ---
     window.viewOffering = function(id) {
       const post = allLoadedOfferings.find(p => p.id == id);
       if (!post) return;
@@ -618,16 +617,23 @@
       const dateStr = new Date(post.created_at).toLocaleString('en-GB');
       const unixTime = Math.floor(new Date(post.created_at).getTime() / 1000);
       const postType = post.type ? post.type.toUpperCase() : 'GOD WORDS';
-      const godText = getGodResponse(post.id, post.type);
+      const godText = post.god_response || getGodResponse(post.id, post.type);
       const permalink = window.location.origin + window.location.pathname + "?offering=" + post.id;
 
       navigate('SINGLE', '/offering=' + post.id);
+
+      const isSong = postType.includes('SONG');
+      const songActionHTML = isSong ? `
+        <div class="audio-waveform-line"></div>
+        <div>
+          <button class="tos-btn" style="border: 3px double var(--tos-green); color: var(--tos-green);" onclick="playOfferingAudio('${godText}')">PLAY</button>
+        </div>
+      ` : '';
 
       document.getElementById("singleOfferingContent").innerHTML = `
         <h2 class="pixel-header">Offering #${post.id}</h2>
 
         <div class="single-view-container">
-          <!-- Left Box -->
           <div class="single-main-box">
             <div>
               <div style="margin-bottom: 12px;">
@@ -640,15 +646,10 @@
               <div class="txt-red" style="font-style: italic; margin-bottom: 4px;">God Says...</div>
               <div class="txt-green" style="font-size: 1.05rem; word-break: break-all;">${godText}</div>
 
-              <div class="audio-waveform-line"></div>
-            </div>
-
-            <div>
-              <button class="tos-btn" style="border: 3px double var(--tos-green); color: var(--tos-green);" onclick="playOfferingAudio('${godText}')">PLAY</button>
+              ${songActionHTML}
             </div>
           </div>
 
-          <!-- Right Sidebar -->
           <div class="single-sidebar">
             <div style="font-weight: bold; margin-bottom: 4px;">Permalink</div>
             <div style="font-size: 0.85rem; word-break: break-all; margin-bottom: 8px; color: #555;">${permalink}</div>
@@ -666,19 +667,18 @@
       `;
     };
 
-    // --- Retro Web Audio Synthesizer Beep Player ---
     window.playOfferingAudio = function(text) {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const numbers = text.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
 
       let startTime = audioCtx.currentTime;
-      const playNotes = numbers.length > 0 ? numbers : [440, 550, 660, 770]; // Fallback tones
+      const playNotes = numbers.length > 0 ? numbers : [440, 550, 660, 770];
 
       playNotes.forEach((freq, index) => {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
-        osc.type = 'square'; // Classic retro 8-bit chip sound
+        osc.type = 'square';
         osc.frequency.setValueAtTime(Math.min(Math.max(freq, 100), 2000), startTime + (index * 0.15));
 
         gain.gain.setValueAtTime(0.1, startTime + (index * 0.15));
@@ -698,10 +698,14 @@
 
       if (!text) { alert("Please enter a message."); return; }
 
-      const { error } = await db.from('offerings').insert([{
+      const tempSeed = Date.now() % 10000;
+      const generatedResponse = getGodResponse(tempSeed, type);
+
+      const { error } = await db.from('thoughts').insert([{
         author_name: 'Anonymous',
         message: text,
-        type: type
+        type: type,
+        god_response: generatedResponse
       }]);
 
       if (error) {
