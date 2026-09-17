@@ -14,7 +14,6 @@
 
   <style>
     :root {
-      /* Authentic TempleOS / VGA Color Palette */
       --tos-bg: #FFFFFF;
       --tos-blue: #0000AA;
       --tos-yellow: #FFFF55;
@@ -22,7 +21,6 @@
       --tos-green: #00AA00;
       --tos-black: #000000;
 
-      /* Real DOS VGA Font */
       --font-pixel: 'Perfect DOS VGA 437', monospace;
       --font-clean: 'Courier New', Courier, monospace;
     }
@@ -106,7 +104,7 @@
       top: -12px;
       left: 50%;
       transform: translateX(-50%);
-      width: 160px;
+      width: 180px;
       height: 22px;
       display: flex;
       align-items: center;
@@ -139,7 +137,6 @@
     .txt-red:hover { text-decoration: underline; }
     .txt-green { color: var(--tos-green); }
 
-    /* Authentic Pixel Headers (Now used for Page Titles like reference) */
     .pixel-header {
       font-family: var(--font-pixel);
       font-size: 1.8rem;
@@ -155,8 +152,41 @@
       image-rendering: pixelated;
       image-rendering: crisp-edges;
       filter: contrast(125%) saturate(110%);
-      border: 2px solid var(--tos-black);
+      border: 3px double var(--tos-blue);
+      background: white;
+      padding: 4px;
       margin-bottom: 16px;
+    }
+
+    /* --- RETRO LOADING BAR STYLES --- */
+    .tos-loader-container {
+      width: 320px;
+      height: 28px;
+      border: 3px double var(--tos-black);
+      background: #e0e0e0;
+      position: relative;
+      margin: 20px auto;
+      overflow: hidden;
+    }
+    .tos-loader-bar {
+      width: 0%;
+      height: 100%;
+      background-color: var(--tos-blue);
+      transition: width 0.1s linear;
+    }
+    .tos-loader-text {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-pixel);
+      color: var(--tos-green);
+      font-size: 1.2rem;
+      letter-spacing: 2px;
     }
 
     /* --- FORM & FILTER ELEMENTS --- */
@@ -182,21 +212,22 @@
     }
     .tos-btn:hover { background: var(--tos-black); color: white; }
 
-    /* TempleOS Box Filter Buttons */
+    /* TempleOS Filter Buttons */
     .tos-filter-btn {
-      font-family: var(--font-clean);
-      font-size: 0.95rem;
+      font-family: var(--font-pixel);
+      font-size: 1.1rem;
       background: white;
-      border: 2px solid var(--tos-black);
+      border: 2px double var(--tos-blue);
       cursor: pointer;
-      padding: 2px 10px;
+      padding: 3px 12px;
       margin: 0 4px;
-      font-weight: bold;
+      color: var(--tos-blue);
     }
-    .tos-filter-btn:hover { background: #eee; }
+    .tos-filter-btn:hover { background: #f0f0ff; }
     .tos-filter-btn.active {
-      background-color: var(--tos-black);
-      color: white;
+      background-color: var(--tos-blue);
+      color: var(--tos-yellow);
+      border: 2px double var(--tos-yellow);
     }
 
     .section-title {
@@ -231,6 +262,7 @@
       font-size: 1.1rem;
       font-weight: bold;
       text-decoration: underline;
+      cursor: pointer;
     }
     .tos-badge-red {
       background-color: var(--tos-red);
@@ -260,8 +292,37 @@
     .card-green-data {
       color: var(--tos-green);
       font-size: 0.95rem;
-      margin-top: 16px;
+      margin-top: 12px;
       word-break: break-all;
+    }
+
+    /* --- SINGLE VIEW LAYOUT (image_7f6fe1.png) --- */
+    .single-view-container {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+    @media(max-width: 800px) {
+      .single-view-container { grid-template-columns: 1fr; }
+    }
+    .single-main-box {
+      border: 2px solid var(--tos-black);
+      background: white;
+      padding: 20px;
+      min-height: 450px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .single-sidebar {
+      border-left: 1px solid #ccc;
+      padding-left: 16px;
+    }
+    .audio-waveform-line {
+      width: 100%;
+      height: 4px;
+      background: var(--tos-green);
+      margin: 20px 0;
     }
   </style>
 </head>
@@ -290,7 +351,7 @@
     <!-- ========================================== -->
     <div id="page-HOME" class="page-section active">
       <div style="margin-top: 20px; line-height: 1.4;">
-        <img id="randomHomeGif" src="globe.png" alt="Retro Icon" class="c64-filter" />
+        <img id="randomHomeGif" src="" alt="" class="c64-filter" />
 
         <h1 class="pixel-header" style="font-size: 2rem;">Welcome to the Online Temple!</h1>
 
@@ -319,7 +380,6 @@
       <div style="margin: 20px auto 40px auto; max-width: 600px;">
         <input type="text" id="searchInput" class="tos-input" placeholder='Search OCR archive... (supports "exact match" and -exclude)' />
 
-        <!-- TempleOS Box Button Filters -->
         <div style="margin: 12px 0 16px 0; font-size: 0.95rem;">
           <strong>Filter:</strong>
           <button type="button" class="tos-filter-btn active" onclick="setFilter('ALL', this)">[ ALL ]</button>
@@ -347,30 +407,27 @@
         <div style="font-weight: bold; margin-bottom: 4px;">Offering</div>
         <textarea id="offeringText" class="tos-textarea" placeholder="Write your offering..."></textarea>
 
-        <div style="font-size: 0.85rem; font-style: italic; margin-bottom: 4px;">Remember: "You get out of it what you put into it".</div>
-        <div style="font-size: 0.85rem; margin-bottom: 16px;"><b>Example:</b> "Make a joke that's genuinely funny"</div>
-
-        <div style="font-weight: bold; margin-bottom: 4px;">Type</div>
-        <select class="tos-select">
-          <option>God Words</option>
+        <div style="font-weight: bold; margin-top: 12px; margin-bottom: 4px;">Type</div>
+        <select id="offeringType" class="tos-select" style="margin-bottom: 16px;">
+          <option value="God Words">God Words</option>
+          <option value="God Passages">God Passages</option>
+          <option value="God Songs">God Songs</option>
         </select>
-
-        <div style="font-weight: bold; margin-bottom: 4px;">Entropy Source</div>
-        <select class="tos-select">
-          <option>Timer (microsecond-range stop-watch)</option>
-        </select>
-
-        <div style="margin-bottom: 8px;">Timer: <span id="timerDisplay">1789654064456</span></div>
-        <div style="margin-bottom: 16px;"><span class="txt-green">[?]</span> The <a href="#" class="txt-red">Holy Spirit</a> can puppet you.</div>
-
-        <div class="txt-green" style="margin-bottom: 16px;">Press g to make God words.</div>
-        <div style="margin-bottom: 16px;">If this seems like a dud due to a bad offering, discard it. Maybe try to make a joke about it in your next offering.</div>
 
         <button class="tos-btn" style="border: 3px double var(--tos-green);" onclick="submitOffering()">SUBMIT</button>
       </div>
 
       <div class="section-title">All Offerings</div>
       <div class="results-grid" id="offeringsGrid"></div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PAGE: SINGLE OFFERING VIEW (image_7f6fe1.png) -->
+    <!-- ========================================== -->
+    <div id="page-SINGLE" class="page-section">
+      <div id="singleOfferingContent">
+        <!-- Injected dynamically via viewOffering() -->
+      </div>
     </div>
 
     <!-- ========================================== -->
@@ -401,6 +458,8 @@
       "succubus.gif", "sumo.gif"
     ];
 
+    let allLoadedOfferings = [];
+
     // Synchronize Favicon and Home Page GIF on Load
     window.addEventListener('DOMContentLoaded', () => {
       const selectedGif = gifList[Math.floor(Math.random() * gifList.length)];
@@ -421,12 +480,6 @@
       document.getElementById('searchFilterValue').value = val;
     }
 
-    setInterval(() => {
-      if(document.getElementById('timerDisplay')) {
-        document.getElementById('timerDisplay').innerText = Date.now() + Math.floor(Math.random() * 1000);
-      }
-    }, 50);
-
     function navigate(pageId, route) {
       document.getElementById('blinkerText').innerText = pageId;
       document.getElementById('routeMarquee').innerText = `ROUTE: ${route}`;
@@ -445,19 +498,80 @@
       }
     }
 
+    // --- Deterministic God Response Generator ---
+    function getGodResponse(id, type) {
+      const seed = Number(id) || 1;
+      const t = type ? type.toUpperCase() : 'GOD WORDS';
+
+      if (t.includes('SONG')) {
+        let nums = [];
+        for (let i = 0; i < 16; i++) {
+          nums.push((seed * 29 + i * 13) % 900 + 100);
+        }
+        return nums.join(',');
+      } else if (t.includes('PASSAGE')) {
+        const passages = [
+          "From Exodus... shalt be able to endure, and all this shall pass like dust in the wind.",
+          "And the light shined upon the waters, and behold, a multitude of grace descended.",
+          "Verily I say unto you, walk not in the counsel of the ungodly, but rejoice in the mainframe.",
+          "Blessed are the pure in heart, for they shall compile without errors.",
+          "Thy word is a lamp unto my feet, and a light unto my path through the silicon."
+        ];
+        return passages[seed % passages.length];
+      } else {
+        const words = ["arriving", "unthought", "silence", "approach", "endeavoured", "ocean", "spectacle", "resonance", "shimmer", "divine", "causality", "entropy"];
+        let count = (seed % 3) + 1;
+        let selected = [];
+        for(let i=0; i<count; i++) {
+          selected.push(words[(seed + i * 7) % words.length]);
+        }
+        return selected.join(' ');
+      }
+    }
+
+    // --- Real-Time Progress Bar Helper ---
+    function showLoadingBar(container) {
+      container.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center;">
+          <div class="tos-loader-container">
+            <div id="tosProgressBar" class="tos-loader-bar"></div>
+            <div class="tos-loader-text">Loading...</div>
+          </div>
+        </div>`;
+
+      let progress = 0;
+      const bar = document.getElementById("tosProgressBar");
+      const interval = setInterval(() => {
+        if (progress < 90) {
+          progress += Math.floor(Math.random() * 15) + 5;
+          if (progress > 90) progress = 90;
+          if (bar) bar.style.width = progress + '%';
+        }
+      }, 50);
+      return interval;
+    }
+
+    function completeLoadingBar(interval) {
+      const bar = document.getElementById("tosProgressBar");
+      if (bar) bar.style.width = '100%';
+      clearInterval(interval);
+    }
+
     async function fetchOfferings() {
       const grid = document.getElementById("offeringsGrid");
       const homeGrid = document.getElementById("homeOfferingsGrid");
 
-      const loadingText = `<div style="font-family:var(--font-pixel); font-size:1.5rem; color:var(--tos-red);">LOADING COMMUNIQUES...</div>`;
-      if(grid) grid.innerHTML = loadingText;
-      if(homeGrid) homeGrid.innerHTML = loadingText;
+      const loaderIntervalGrid = grid ? showLoadingBar(grid) : null;
+      const loaderIntervalHome = homeGrid ? showLoadingBar(homeGrid) : null;
 
       const { data, error } = await db
         .from('offerings')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(50);
+
+      if (loaderIntervalGrid) completeLoadingBar(loaderIntervalGrid);
+      if (loaderIntervalHome) completeLoadingBar(loaderIntervalHome);
 
       if (error) {
         if(grid) grid.innerHTML = `<div style="color:var(--tos-red);">ERROR: ${error.message}</div>`;
@@ -471,17 +585,23 @@
         return;
       }
 
+      allLoadedOfferings = data;
+
       const buildCard = (post) => {
         const dateStr = new Date(post.created_at).toLocaleString('en-GB');
+        const postType = post.type ? post.type.toUpperCase() : 'GOD WORDS';
+        const godText = getGodResponse(post.id, post.type);
+
         return `
         <div class="tos-card">
           <div class="card-header">
-            <span class="card-id">#${post.id}</span>
+            <span class="card-id" onclick="viewOffering(${post.id})">#${post.id}</span>
             <span class="tos-badge-red">(Anon)</span>
           </div>
-          <div><span class="tos-badge-black">-- USER OFFERING --</span></div>
+          <div><span class="tos-badge-black">-- ${postType} --</span></div>
           <div class="card-timestamp">Posted ${dateStr}</div>
           <div class="card-body-clean">${post.message}</div>
+          <div class="card-green-data">${godText}</div>
         </div>
         `;
       };
@@ -490,16 +610,105 @@
       if(homeGrid) homeGrid.innerHTML = data.slice(0, 4).map(post => buildCard(post)).join('');
     }
 
+    // --- Fullscreen Single Offering View (`image_7f6fe1.png`) ---
+    window.viewOffering = function(id) {
+      const post = allLoadedOfferings.find(p => p.id == id);
+      if (!post) return;
+
+      const dateStr = new Date(post.created_at).toLocaleString('en-GB');
+      const unixTime = Math.floor(new Date(post.created_at).getTime() / 1000);
+      const postType = post.type ? post.type.toUpperCase() : 'GOD WORDS';
+      const godText = getGodResponse(post.id, post.type);
+      const permalink = window.location.origin + window.location.pathname + "?offering=" + post.id;
+
+      navigate('SINGLE', '/offering=' + post.id);
+
+      document.getElementById("singleOfferingContent").innerHTML = `
+        <h2 class="pixel-header">Offering #${post.id}</h2>
+
+        <div class="single-view-container">
+          <!-- Left Box -->
+          <div class="single-main-box">
+            <div>
+              <div style="margin-bottom: 12px;">
+                <span class="tos-badge-red" style="font-size:0.8rem;">(You)</span>
+                <span class="tos-badge-black" style="margin-left: 6px;">-- ${postType} --</span>
+              </div>
+              <div style="font-weight: bold; margin-bottom: 4px;">Offering</div>
+              <div style="font-size: 1.1rem; margin-bottom: 20px; white-space: pre-wrap;">${post.message}</div>
+
+              <div class="txt-red" style="font-style: italic; margin-bottom: 4px;">God Says...</div>
+              <div class="txt-green" style="font-size: 1.05rem; word-break: break-all;">${godText}</div>
+
+              <div class="audio-waveform-line"></div>
+            </div>
+
+            <div>
+              <button class="tos-btn" style="border: 3px double var(--tos-green); color: var(--tos-green);" onclick="playOfferingAudio('${godText}')">PLAY</button>
+            </div>
+          </div>
+
+          <!-- Right Sidebar -->
+          <div class="single-sidebar">
+            <div style="font-weight: bold; margin-bottom: 4px;">Permalink</div>
+            <div style="font-size: 0.85rem; word-break: break-all; margin-bottom: 8px; color: #555;">${permalink}</div>
+            <button class="tos-btn" style="font-size: 0.9rem; margin-bottom: 24px;" onclick="navigator.clipboard.writeText('${permalink}'); alert('Permalink copied!');">COPY PERMALINK</button>
+
+            <div style="font-weight: bold; margin-bottom: 4px;">Entropy Timestamp</div>
+            <div style="font-size: 0.9rem; margin-bottom: 24px; color: #333;">
+              ${dateStr.split(',')[0]}, ${dateStr.split(',')[1].trim()} (UNIX: ${unixTime + 1789644000})
+            </div>
+
+            <div style="font-weight: bold; margin-bottom: 4px;">Posted at</div>
+            <div style="font-size: 0.9rem; color: #333;">${dateStr}</div>
+          </div>
+        </div>
+      `;
+    };
+
+    // --- Retro Web Audio Synthesizer Beep Player ---
+    window.playOfferingAudio = function(text) {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const numbers = text.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+
+      let startTime = audioCtx.currentTime;
+      const playNotes = numbers.length > 0 ? numbers : [440, 550, 660, 770]; // Fallback tones
+
+      playNotes.forEach((freq, index) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'square'; // Classic retro 8-bit chip sound
+        osc.frequency.setValueAtTime(Math.min(Math.max(freq, 100), 2000), startTime + (index * 0.15));
+
+        gain.gain.setValueAtTime(0.1, startTime + (index * 0.15));
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + (index * 0.15) + 0.12);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(startTime + (index * 0.15));
+        osc.stop(startTime + (index * 0.15) + 0.12);
+      });
+    };
+
     async function submitOffering() {
       const text = document.getElementById("offeringText").value.trim();
+      const type = document.getElementById("offeringType").value;
+
       if (!text) { alert("Please enter a message."); return; }
 
-      const { error } = await db.from('offerings').insert([{ author_name: 'Anonymous', message: text }]);
+      const { error } = await db.from('offerings').insert([{
+        author_name: 'Anonymous',
+        message: text,
+        type: type
+      }]);
 
       if (error) {
         alert("Database Error: " + error.message);
       } else {
         document.getElementById("offeringText").value = '';
+        navigate('OFFERINGS', '/offerings');
         fetchOfferings();
       }
     }
@@ -511,7 +720,7 @@
 
       if (!query) return;
 
-      grid.innerHTML = `<div style="font-family:var(--font-pixel); font-size:1.5rem; color:var(--tos-red);">SCANNING...</div>`;
+      const loaderInterval = showLoadingBar(grid);
 
       let dbQuery = db.from('documents').select('*').textSearch('ocr_text', query, { type: 'websearch' });
 
@@ -520,6 +729,8 @@
       }
 
       const { data, error } = await dbQuery;
+
+      completeLoadingBar(loaderInterval);
 
       if (error) {
         grid.innerHTML = `<div style="color:var(--tos-red);">DB ERROR: ${error.message}</div>`;
