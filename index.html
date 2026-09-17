@@ -367,7 +367,7 @@
       grid.innerHTML = `<div style="font-size:1.5rem; color:var(--tos-red);">SCANNING...</div>`;
 
       // Search the 'documents' table
-      const { data, error } = await db.from('documents').select('*').textSearch('ocr_text', query);
+      const { data, error } = await db.from('documents').select('*').ilike('ocr_text', `%${query}%`);
 
       if (error || !data || data.length === 0) {
         grid.innerHTML = `<div style="font-size:1.5rem; color:var(--tos-red);">NO MATCHES FOUND.</div>`;
