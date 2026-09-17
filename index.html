@@ -332,7 +332,7 @@
   <div class="tos-navbar" id="navbar">
     <a onclick="navigate('HOME', '/')" class="active">HOME</a>
     <a onclick="navigate('ARCHIVE', '/archive')">ARCHIVE</a>
-    <a onclick="navigate('OFFERINGS', '/offerings')">OFFERINGS</a>
+    <a onclick="navigate('THOUGHTS', '/thoughts')">THOUGHTS</a>
     <a onclick="navigate('ABOUT', '/about')">ABOUT</a>
   </div>
 
@@ -356,16 +356,16 @@
         <h1 class="pixel-header" style="font-size: 2rem;">Welcome to Minneapolewis!</h1>
 
         <p style="margin: 0 0 8px 0;">'Emotional Neurodivergent'</p>
-        <p style="margin: 0 0 8px 0;">A place to read my story and do offerings to God.</p>
+        <p style="margin: 0 0 8px 0;">A place to read my story and share thoughts with God.</p>
 
         <p style="margin-top: 16px;"><a href="#" class="txt-red" style="text-decoration: underline;">My Story</a></p>
       </div>
 
-      <div class="section-title" style="text-align: left; margin-top: 40px;">Latest Offerings</div>
-      <div class="results-grid" id="homeOfferingsGrid"></div>
+      <div class="section-title" style="text-align: left; margin-top: 40px;">Latest Thoughts</div>
+      <div class="results-grid" id="homeThoughtsGrid"></div>
 
       <div style="margin-top: 30px;">
-        <button class="tos-btn" style="border: 3px double var(--tos-black); padding: 6px 20px;" onclick="navigate('OFFERINGS', '/offerings')">[ SEE ALL OFFERINGS ]</button>
+        <button class="tos-btn" style="border: 3px double var(--tos-black); padding: 6px 20px;" onclick="navigate('THOUGHTS', '/thoughts')">[ SEE ALL THOUGHTS ]</button>
       </div>
     </div>
 
@@ -394,37 +394,37 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- PAGE: OFFERINGS -->
+    <!-- PAGE: THOUGHTS -->
     <!-- ========================================== -->
-    <div id="page-OFFERINGS" class="page-section">
+    <div id="page-THOUGHTS" class="page-section">
 
-      <h2 class="pixel-header" style="margin-bottom: 8px;">User Offerings</h2>
-      <p style="margin: 0 0 24px 0;">All offerings are submitted by anonymous users.</p>
+      <h2 class="pixel-header" style="margin-bottom: 8px;">User Thoughts</h2>
+      <p style="margin: 0 0 24px 0;">All thoughts are submitted by anonymous users.</p>
 
       <div style="border: 2px solid var(--tos-black); padding: 16px; margin-bottom: 40px; max-width: 800px; background: white;">
-        <div style="font-weight: bold; margin-bottom: 4px;">Offering</div>
-        <textarea id="offeringText" class="tos-textarea" placeholder="Write your offering..."></textarea>
+        <div style="font-weight: bold; margin-bottom: 4px;">Thought</div>
+        <textarea id="thoughtText" class="tos-textarea" placeholder="Write your thought..."></textarea>
 
         <div style="font-weight: bold; margin-top: 12px; margin-bottom: 4px;">Type</div>
-        <select id="offeringType" class="tos-select" style="margin-bottom: 4px;">
+        <select id="thoughtType" class="tos-select" style="margin-bottom: 4px;">
           <option value="God Words">God Words</option>
           <option value="God Passages">God Passages</option>
           <option value="God Songs">God Songs</option>
         </select>
         <div style="font-size: 0.85rem; font-style: italic; margin-bottom: 16px;">God will answer your thought.</div>
 
-        <button class="tos-btn" style="border: 3px double var(--tos-green);" onclick="submitOffering()">SUBMIT</button>
+        <button class="tos-btn" style="border: 3px double var(--tos-green);" onclick="submitThought()">SUBMIT</button>
       </div>
 
-      <div class="section-title">All Offerings</div>
-      <div class="results-grid" id="offeringsGrid"></div>
+      <div class="section-title">All Thoughts</div>
+      <div class="results-grid" id="thoughtsGrid"></div>
     </div>
 
     <!-- ========================================== -->
-    <!-- PAGE: SINGLE OFFERING VIEW -->
+    <!-- PAGE: SINGLE THOUGHT VIEW -->
     <!-- ========================================== -->
     <div id="page-SINGLE" class="page-section">
-      <div id="singleOfferingContent"></div>
+      <div id="singleThoughtContent"></div>
     </div>
 
     <!-- ========================================== -->
@@ -453,7 +453,7 @@
       "succubus.gif", "sumo.gif"
     ];
 
-    let allLoadedOfferings = [];
+    let allLoadedThoughts = [];
     let kjvWords = [];
     let kjvSentences = [];
 
@@ -476,7 +476,7 @@
         kjvSentences = ["And the light shined upon the waters, and behold, a multitude of grace descended."];
       }
 
-      fetchOfferings();
+      fetchThoughts();
     });
 
     function setFilter(val, btn) {
@@ -498,8 +498,8 @@
         else link.classList.remove('active');
       });
 
-      if (pageId === 'OFFERINGS') {
-        fetchOfferings();
+      if (pageId === 'THOUGHTS') {
+        fetchThoughts();
       }
     }
 
@@ -557,9 +557,9 @@
       clearInterval(interval);
     }
 
-    async function fetchOfferings() {
-      const grid = document.getElementById("offeringsGrid");
-      const homeGrid = document.getElementById("homeOfferingsGrid");
+    async function fetchThoughts() {
+      const grid = document.getElementById("thoughtsGrid");
+      const homeGrid = document.getElementById("homeThoughtsGrid");
 
       const loaderIntervalGrid = grid ? showLoadingBar(grid) : null;
       const loaderIntervalHome = homeGrid ? showLoadingBar(homeGrid) : null;
@@ -579,13 +579,13 @@
       }
 
       if (!data || data.length === 0) {
-        const emptyMsg = `<div>NO OFFERINGS YET. BE THE FIRST.</div>`;
+        const emptyMsg = `<div>NO THOUGHTS YET. BE THE FIRST.</div>`;
         if(grid) grid.innerHTML = emptyMsg;
         if(homeGrid) homeGrid.innerHTML = emptyMsg;
         return;
       }
 
-      allLoadedOfferings = data;
+      allLoadedThoughts = data;
 
       const buildCard = (post) => {
         const dateStr = new Date(post.created_at).toLocaleString('en-GB');
@@ -595,7 +595,7 @@
         return `
         <div class="tos-card">
           <div class="card-header">
-            <span class="card-id" onclick="viewOffering(${post.id})">#${post.id}</span>
+            <span class="card-id" onclick="viewThought(${post.id})">#${post.id}</span>
             <span class="tos-badge-red">(Anon)</span>
           </div>
           <div><span class="tos-badge-black">-- ${postType} --</span></div>
@@ -610,28 +610,28 @@
       if(homeGrid) homeGrid.innerHTML = data.slice(0, 4).map(post => buildCard(post)).join('');
     }
 
-    window.viewOffering = function(id) {
-      const post = allLoadedOfferings.find(p => p.id == id);
+    window.viewThought = function(id) {
+      const post = allLoadedThoughts.find(p => p.id == id);
       if (!post) return;
 
       const dateStr = new Date(post.created_at).toLocaleString('en-GB');
       const unixTime = Math.floor(new Date(post.created_at).getTime() / 1000);
       const postType = post.type ? post.type.toUpperCase() : 'GOD WORDS';
       const godText = post.god_response || getGodResponse(post.id, post.type);
-      const permalink = window.location.origin + window.location.pathname + "?offering=" + post.id;
+      const permalink = window.location.origin + window.location.pathname + "?thought=" + post.id;
 
-      navigate('SINGLE', '/offering=' + post.id);
+      navigate('SINGLE', '/thought=' + post.id);
 
       const isSong = postType.includes('SONG');
       const songActionHTML = isSong ? `
         <div class="audio-waveform-line"></div>
         <div>
-          <button class="tos-btn" style="border: 3px double var(--tos-green); color: var(--tos-green);" onclick="playOfferingAudio('${godText}')">PLAY</button>
+          <button class="tos-btn" style="border: 3px double var(--tos-green); color: var(--tos-green);" onclick="playThoughtAudio('${godText}')">PLAY</button>
         </div>
       ` : '';
 
-      document.getElementById("singleOfferingContent").innerHTML = `
-        <h2 class="pixel-header">Offering #${post.id}</h2>
+      document.getElementById("singleThoughtContent").innerHTML = `
+        <h2 class="pixel-header">Thought #${post.id}</h2>
 
         <div class="single-view-container">
           <div class="single-main-box">
@@ -640,7 +640,7 @@
                 <span class="tos-badge-red" style="font-size:0.8rem;">(You)</span>
                 <span class="tos-badge-black" style="margin-left: 6px;">-- ${postType} --</span>
               </div>
-              <div style="font-weight: bold; margin-bottom: 4px;">Offering</div>
+              <div style="font-weight: bold; margin-bottom: 4px;">Thought</div>
               <div style="font-size: 1.1rem; margin-bottom: 20px; white-space: pre-wrap;">${post.message}</div>
 
               <div class="txt-red" style="font-style: italic; margin-bottom: 4px;">God Says...</div>
@@ -667,7 +667,7 @@
       `;
     };
 
-    window.playOfferingAudio = function(text) {
+    window.playThoughtAudio = function(text) {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const numbers = text.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
 
@@ -692,9 +692,9 @@
       });
     };
 
-    async function submitOffering() {
-      const text = document.getElementById("offeringText").value.trim();
-      const type = document.getElementById("offeringType").value;
+    async function submitThought() {
+      const text = document.getElementById("thoughtText").value.trim();
+      const type = document.getElementById("thoughtType").value;
 
       if (!text) { alert("Please enter a message."); return; }
 
@@ -711,9 +711,9 @@
       if (error) {
         alert("Database Error: " + error.message);
       } else {
-        document.getElementById("offeringText").value = '';
-        navigate('OFFERINGS', '/offerings');
-        fetchOfferings();
+        document.getElementById("thoughtText").value = '';
+        navigate('THOUGHTS', '/thoughts');
+        fetchThoughts();
       }
     }
 
