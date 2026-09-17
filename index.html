@@ -503,15 +503,19 @@
       }
     }
 
-    // --- Authentic Massive KJV Bible God Response Generator ---
+   // --- Authentic Massive KJV Bible & Random God Response Generator ---
     function getGodResponse(id, type) {
       const seed = Number(id) || 1;
       const t = type ? type.toUpperCase() : 'GOD WORDS';
 
       if (t.includes('SONG')) {
         let nums = [];
+        let current = seed * 1234567; // Seed the pseudo-random stream using the ID
         for (let i = 0; i < 16; i++) {
-          nums.push(((seed * 29 + i * 37) % 900) + 100);
+          // Pseudo-random formula to scatter notes randomly between 100 and 900
+          current = (current * 1103515245 + 12345) % 2147483648;
+          let note = Math.floor((current / 2147483648) * 800) + 100;
+          nums.push(note);
         }
         return nums.join(',');
       } else if (t.includes('PASSAGE')) {
