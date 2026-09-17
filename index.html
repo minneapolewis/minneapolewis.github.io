@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=VT323&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -19,10 +19,19 @@
       --tos-green: #00AA00;
       --tos-black: #000000;
       --font-pixel: 'VT323', monospace;
-      --font-clean: 'Inter', sans-serif;
     }
 
     * { box-sizing: border-box; }
+
+    /* --- INVERTED TEXT SELECTION --- */
+    ::selection {
+      background-color: var(--tos-black);
+      color: var(--tos-bg);
+    }
+    ::-moz-selection {
+      background-color: var(--tos-black);
+      color: var(--tos-bg);
+    }
 
     body {
       background-color: var(--tos-bg);
@@ -136,7 +145,7 @@
       max-width: 400px;
       margin-bottom: 8px;
     }
-    .tos-textarea { resize: vertical; min-height: 80px; font-family: var(--font-clean); font-size: 1rem; }
+    .tos-textarea { resize: vertical; min-height: 80px; }
     .tos-btn {
       font-family: var(--font-pixel);
       font-size: 1.4rem;
@@ -147,7 +156,7 @@
     }
     .tos-btn:hover { background: var(--tos-black); color: white; }
 
-    /* Results / Cards */
+    /* --- RESULTS / CARDS (TEMPLEOS REPLICA) --- */
     .section-title {
       color: var(--tos-red);
       font-size: 1.6rem;
@@ -160,14 +169,47 @@
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 16px;
     }
-    .tos-card { border: 2px solid var(--tos-black); background: white; padding: 8px; }
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .card-id { color: var(--tos-red); font-size: 1.4rem; font-weight: bold; }
-    .tos-badge-black { background-color: var(--tos-black); color: #FFFFFF; font-size: 1.1rem; padding: 1px 6px; display: inline-block; margin-bottom: 6px; }
-    .tos-badge-red { background-color: var(--tos-red); color: #FFFFFF; font-size: 1rem; padding: 0 4px; }
-    .card-timestamp { color: #333; font-size: 1.1rem; margin-bottom: 12px; }
-    .card-body-clean { font-family: var(--font-clean); font-size: 0.95rem; line-height: 1.4; color: #111; margin-bottom: 12px; white-space: pre-wrap; }
-    .card-green-data { color: var(--tos-green); font-size: 1.25rem; word-break: break-all; }
+    .tos-card {
+      border: 2px solid var(--tos-black);
+      background: white;
+      padding: 12px;
+    }
+    .card-header {
+      margin-bottom: 8px;
+    }
+    .card-id {
+      color: var(--tos-red);
+      font-size: 1.4rem;
+      text-decoration: underline;
+    }
+    .tos-badge-black {
+      background-color: var(--tos-black);
+      color: #FFFFFF;
+      font-size: 1.2rem;
+      padding: 1px 6px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+    .card-timestamp {
+      color: #777777;
+      font-family: var(--font-pixel);
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+    }
+    .card-body-clean {
+      font-family: var(--font-pixel);
+      font-size: 1.4rem;
+      line-height: 1.2;
+      color: var(--tos-black);
+      margin-bottom: 12px;
+      white-space: pre-wrap;
+    }
+    .card-green-data {
+      color: var(--tos-green);
+      font-family: var(--font-pixel);
+      font-size: 1.3rem;
+      word-break: break-all;
+    }
   </style>
 </head>
 <body>
@@ -197,14 +239,6 @@
       <div class="hero-section">
         <img src="globe.png" alt="Globe" class="hero-globe" onerror="this.style.display='none'" />
         <h1 class="txt-red" style="font-size: 2rem; margin: 0 0 16px 0;">Welcome to Minneapolewis!</h1>
-        <p style="margin-bottom: 8px;"></p>
-        <p style="margin-bottom: 8px;"></p>
-        <p style="margin-bottom: 8px;">
-          <a href="#" class="txt-red">
-        </p>
-        <p style="margin-top: 16px;">
-          <a href="#" class="txt-red"></a>
-        </p>
       </div>
     </div>
 
@@ -236,16 +270,7 @@
 
       <div class="section-title">Latest Offerings</div>
       <div class="results-grid" id="offeringsGrid">
-        <!-- Example Post -->
-        <div class="tos-card">
-          <div class="card-header">
-            <span class="card-id">#1</span>
-            <span class="tos-badge-red">(Anon)</span>
-          </div>
-          <div><span class="tos-badge-black">-- USER OFFERING --</span></div>
-          <div class="card-timestamp"></div>
-          <div class="card-body-clean"></div>
-        </div>
+        <!-- Loaded dynamically -->
       </div>
     </div>
 
@@ -254,7 +279,7 @@
     <!-- ========================================== -->
     <div id="page-ABOUT" class="page-section">
       <div class="section-title">About the Temple Archive</div>
-      <div style="font-family: var(--font-clean); font-size: 1.1rem; line-height: 1.6; max-width: 800px;">
+      <div style="font-size: 1.3rem; line-height: 1.4; max-width: 800px;">
         <p>This system was designed to index and archive files and videos, making them fully searchable via an Optical Character Recognition (OCR) pipeline.</p>
         <br>
         <p>The interface pays homage to the design philosophy of TempleOS, prioritizing raw utilitarian layouts, unpretentious controls, and 16-color VGA aesthetics.</p>
@@ -263,13 +288,11 @@
 
   </div>
 
- <!-- JAVASCRIPT: Navigation & Database Logic -->
+  <!-- JAVASCRIPT: Navigation & Database Logic -->
   <script>
     // --- Supabase Setup ---
     const SUPABASE_URL = "https://workywiidpruyjmxlodk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_QP3KTKnmSZr7OVc8Yoka5w_VcB48hNV";
-
-    // 1. THIS is the line that actually turns on the connection!
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // --- Navigation Logic ---
@@ -286,7 +309,6 @@
         else link.classList.remove('active');
       });
 
-      // If they click the Offerings tab, fetch the latest posts from the database!
       if (pageId === 'OFFERINGS') {
         fetchOfferings();
       }
@@ -297,7 +319,6 @@
       const grid = document.getElementById("offeringsGrid");
       grid.innerHTML = `<div style="font-size:1.5rem; color:var(--tos-red);">LOADING COMMUNIQUES...</div>`;
 
-      // Pull the latest 50 posts from Supabase, newest first
       const { data, error } = await db
         .from('offerings')
         .select('*')
@@ -314,19 +335,16 @@
         return;
       }
 
-      // Render them into the TempleOS cards
       grid.innerHTML = data.map((post) => {
-        // Format the date nicely
-        const dateStr = new Date(post.created_at).toLocaleString();
+        const dateStr = new Date(post.created_at).toLocaleString('en-GB');
 
         return `
         <div class="tos-card">
           <div class="card-header">
             <span class="card-id">#${post.id}</span>
-            <span class="tos-badge-red">(Anon)</span>
           </div>
           <div><span class="tos-badge-black">-- USER OFFERING --</span></div>
-          <div class="card-timestamp">${dateStr}</div>
+          <div class="card-timestamp">Posted ${dateStr}</div>
           <div class="card-body-clean">${post.message}</div>
           <div class="card-green-data">- ${post.author_name}</div>
         </div>
@@ -344,7 +362,6 @@
         return;
       }
 
-      // Push the data to the 'offerings' table in Supabase
       const { error } = await db.from('offerings').insert([
         { author_name: name, message: text }
       ]);
@@ -352,13 +369,13 @@
       if (error) {
         alert("Database Error: " + error.message);
       } else {
-        // Clear the text box and refresh the grid to show the new post
         document.getElementById("offeringText").value = '';
+        document.getElementById("offeringName").value = '';
         fetchOfferings();
       }
     }
 
-   // --- Archive Search ---
+    // --- Archive Search ---
     async function executeSearch() {
       const query = document.getElementById("searchInput").value.trim();
       const grid = document.getElementById("searchResultsGrid");
@@ -366,7 +383,6 @@
 
       grid.innerHTML = `<div style="font-size:1.5rem; color:var(--tos-red);">SCANNING...</div>`;
 
-      // Use .ilike() for a wildcard search to catch everything
       const { data, error } = await db
         .from('documents')
         .select('*')
@@ -382,22 +398,23 @@
         return;
       }
 
-      // Render the matches
-      grid.innerHTML = data.map(doc => `
+      grid.innerHTML = data.map(doc => {
+        const dateStr = doc.created_at ? new Date(doc.created_at).toLocaleString('en-GB') : 'Archive';
+        return `
         <div class="tos-card">
           <div class="card-header">
             <span class="card-id">#${doc.id}</span>
-            <span class="tos-badge-red">(DB)</span>
           </div>
           <div><span class="tos-badge-black">-- ${doc.type || 'OCR MATCH'} --</span></div>
-          <div class="card-timestamp">Found in Archive</div>
+          <div class="card-timestamp">Posted ${dateStr}</div>
           <div class="card-body-clean">${doc.snippet || ''}</div>
           <div class="card-green-data">
             <a href="${doc.file_url}" target="_blank" style="color:var(--tos-green); text-decoration:none;">
               [ OPEN FILE ]
             </a>
           </div>
-        </div>`).join('');
+        </div>`;
+      }).join('');
     }
   </script>
 </body>
