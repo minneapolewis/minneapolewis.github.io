@@ -23,14 +23,14 @@
 
     * { box-sizing: border-box; }
 
-    /* --- INVERTED TEXT SELECTION --- */
-    ::selection {
-      background-color: var(--tos-black);
-      color: var(--tos-bg);
+    /* --- INVERTED TEXT SELECTION (Forced) --- */
+    *::selection {
+      background-color: var(--tos-black) !important;
+      color: var(--tos-bg) !important;
     }
-    ::-moz-selection {
-      background-color: var(--tos-black);
-      color: var(--tos-bg);
+    *::-moz-selection {
+      background-color: var(--tos-black) !important;
+      color: var(--tos-bg) !important;
     }
 
     body {
@@ -39,6 +39,7 @@
       font-family: var(--font-pixel);
       margin: 0;
       padding: 0;
+      font-size: 1.4rem;
     }
 
     /* --- NAVBAR --- */
@@ -52,7 +53,6 @@
     .tos-navbar a {
       color: var(--tos-yellow);
       text-decoration: none;
-      font-size: 1.4rem;
       letter-spacing: 1px;
       text-transform: uppercase;
       padding: 0 4px;
@@ -125,14 +125,18 @@
     }
 
     /* --- PAGE SECTIONS --- */
-    .page-section { display: none; }
+    .page-section { display: none; text-align: left; }
     .page-section.active { display: block; }
 
+    /* Only Home is centered */
+    #page-HOME { text-align: center; }
+
     /* Hero / General styling */
-    .hero-section { text-align: center; margin-top: 20px; font-size: 1.3rem; line-height: 1.4; }
+    .hero-section { margin-top: 20px; line-height: 1.4; }
     .hero-globe { width: 128px; height: 128px; image-rendering: pixelated; margin-bottom: 16px; }
     .txt-red { color: var(--tos-red); text-decoration: none; }
     .txt-red:hover { text-decoration: underline; }
+    .txt-green { color: var(--tos-green); }
 
     /* Inputs & Buttons */
     .tos-input, .tos-textarea {
@@ -142,10 +146,10 @@
       padding: 4px 8px;
       outline: none;
       width: 100%;
-      max-width: 400px;
       margin-bottom: 8px;
     }
-    .tos-textarea { resize: vertical; min-height: 80px; }
+    .tos-textarea { resize: vertical; min-height: 100px; }
+
     .tos-btn {
       font-family: var(--font-pixel);
       font-size: 1.4rem;
@@ -156,7 +160,7 @@
     }
     .tos-btn:hover { background: var(--tos-black); color: white; }
 
-    /* --- RESULTS / CARDS (TEMPLEOS REPLICA) --- */
+    /* --- RESULTS / CARDS (1:1 TEMPLEOS REPLICA) --- */
     .section-title {
       color: var(--tos-red);
       font-size: 1.6rem;
@@ -164,11 +168,14 @@
       margin-bottom: 16px;
       padding-bottom: 4px;
     }
+
+    /* Layout grid for cards */
     .results-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 16px;
     }
+
     .tos-card {
       border: 2px solid var(--tos-black);
       background: white;
@@ -179,7 +186,7 @@
     }
     .card-id {
       color: var(--tos-red);
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       text-decoration: underline;
     }
     .tos-badge-black {
@@ -194,14 +201,13 @@
       color: #777777;
       font-family: var(--font-pixel);
       font-size: 1.3rem;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
     .card-body-clean {
       font-family: var(--font-pixel);
       font-size: 1.4rem;
       line-height: 1.2;
       color: var(--tos-black);
-      margin-bottom: 12px;
       white-space: pre-wrap;
     }
     .card-green-data {
@@ -209,6 +215,7 @@
       font-family: var(--font-pixel);
       font-size: 1.3rem;
       word-break: break-all;
+      margin-top: 12px;
     }
   </style>
 </head>
@@ -238,7 +245,7 @@
     <div id="page-HOME" class="page-section active">
       <div class="hero-section">
         <img src="globe.png" alt="Globe" class="hero-globe" onerror="this.style.display='none'" />
-        <h1 class="txt-red" style="font-size: 2rem; margin: 0 0 16px 0;">Welcome to Minneapolewis!</h1>
+        <h1 class="txt-red" style="font-size: 2rem; margin: 0 0 16px 0; font-weight: normal;">Welcome to Minneapolewis!</h1>
       </div>
     </div>
 
@@ -246,8 +253,8 @@
     <!-- PAGE: ARCHIVE (Search Database) -->
     <!-- ========================================== -->
     <div id="page-ARCHIVE" class="page-section">
-      <div style="text-align: center; margin: 30px 0;">
-        <input type="text" id="searchInput" class="tos-input" placeholder="Search OCR archive..." />
+      <div style="margin: 20px 0 40px 0;">
+        <input type="text" id="searchInput" class="tos-input" style="max-width: 500px;" placeholder="Search OCR archive..." />
         <br>
         <button class="tos-btn" onclick="executeSearch()">[ SEARCH ]</button>
       </div>
@@ -258,14 +265,52 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- PAGE: OFFERINGS (Anonymous Message Board) -->
+    <!-- PAGE: OFFERINGS (Authentic Replica) -->
     <!-- ========================================== -->
     <div id="page-OFFERINGS" class="page-section">
-      <div style="margin-bottom: 24px; text-align: center;">
-        <h2 class="txt-red" style="margin-bottom: 12px;">Submit an Offering</h2>
-        <input type="text" id="offeringName" class="tos-input" placeholder="Name (Anonymous)" /><br>
-        <textarea id="offeringText" class="tos-textarea" placeholder="Type your message here..."></textarea><br>
-        <button class="tos-btn" onclick="submitOffering()">[ SUBMIT OFFERING ]</button>
+
+      <h2 class="txt-red" style="font-size: 2rem; margin: 0 0 12px 0; font-weight: normal;">New Offering</h2>
+
+      <p class="txt-red" style="margin: 0 0 16px 0;">Entertain God! Remember Mission Number One: Entertain the F*ck out of Mr. God!</p>
+
+      <p style="margin: 0 0 16px 0;">This uses <b>true entropy sources</b> for <b>truly random numbers</b> to get primordial decision tree numbers influenced by your offering and puppeting by the <a href="#" class="txt-red">Holy Spirit</a> .</p>
+
+      <p style="margin: 0 0 16px 0;">The CIA loves to spread that the Temple's oracle uses <b>PSEUDO</b> random number generators but it has <b>always</b> used true entropy sources intentionally to tap into synchronicity, going beyond causality as we often think of it.</p>
+
+      <p style="margin: 0 0 16px 0;">Think of it this way because this is what we're familiar with. The world has been planned out by a super artificial intelligence.</p>
+
+      <hr style="border: none; border-top: 1px solid var(--tos-black); margin: 24px 0;">
+
+      <p style="margin: 0 0 8px 0;"><a href="#" class="txt-red">Deut. 16:16</a> You have to do 3 offerings a year.</p>
+      <p style="margin: 0 0 4px 0;">• If you do an Offering, He'll talk to you.</p>
+      <p style="margin: 0 0 24px 0;">• If you talk to God, He'll talk to you.</p>
+
+      <!-- Exact Form Box Replica -->
+      <div style="border: 2px solid var(--tos-black); padding: 12px; margin-bottom: 40px; max-width: 800px;">
+
+        <div style="font-weight: bold; margin-bottom: 4px;">Offering</div>
+        <textarea id="offeringText" class="tos-textarea" placeholder="Write your offering..."></textarea>
+
+        <div style="font-size: 1.1rem; font-style: italic; margin-bottom: 4px;">Remember: "You get out of it what you put into it".</div>
+        <div style="font-size: 1.1rem; margin-bottom: 16px;"><b>Example:</b> "Make a joke that's genuinely funny"</div>
+
+        <div style="font-weight: bold; margin-bottom: 4px;">Type</div>
+        <select class="tos-input" style="padding: 2px; margin-bottom: 16px; width: 100%;">
+          <option>God Words</option>
+        </select>
+
+        <div style="font-weight: bold; margin-bottom: 4px;">Entropy Source</div>
+        <select class="tos-input" style="padding: 2px; margin-bottom: 8px; width: 100%;">
+          <option>Timer (microsecond-range stop-watch)</option>
+        </select>
+
+        <div style="margin-bottom: 8px;">Timer: <span id="timerDisplay">1789654064456</span></div>
+        <div style="margin-bottom: 16px;"><span class="txt-green">[?]</span> The <a href="#" class="txt-red">Holy Spirit</a> can puppet you.</div>
+
+        <div class="txt-green" style="margin-bottom: 16px;">Press g to make God words.</div>
+        <div style="margin-bottom: 16px;">If this seems like a dud due to a bad offering, discard it. Maybe try to make a joke about it in your next offering.</div>
+
+        <button class="tos-btn" style="border: 3px double var(--tos-green); padding: 4px 16px; font-weight: bold;" onclick="submitOffering()">SUBMIT</button>
       </div>
 
       <div class="section-title">Latest Offerings</div>
@@ -279,7 +324,7 @@
     <!-- ========================================== -->
     <div id="page-ABOUT" class="page-section">
       <div class="section-title">About the Temple Archive</div>
-      <div style="font-size: 1.3rem; line-height: 1.4; max-width: 800px;">
+      <div style="font-size: 1.4rem; line-height: 1.4; max-width: 800px;">
         <p>This system was designed to index and archive files and videos, making them fully searchable via an Optical Character Recognition (OCR) pipeline.</p>
         <br>
         <p>The interface pays homage to the design philosophy of TempleOS, prioritizing raw utilitarian layouts, unpretentious controls, and 16-color VGA aesthetics.</p>
@@ -294,6 +339,12 @@
     const SUPABASE_URL = "https://workywiidpruyjmxlodk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_QP3KTKnmSZr7OVc8Yoka5w_VcB48hNV";
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // --- Spinning Entropy Timer ---
+    setInterval(() => {
+      // Creates a rapidly changing fake microsecond timestamp to match the visual
+      document.getElementById('timerDisplay').innerText = Date.now() + Math.floor(Math.random() * 1000);
+    }, 50);
 
     // --- Navigation Logic ---
     function navigate(pageId, route) {
@@ -336,8 +387,10 @@
       }
 
       grid.innerHTML = data.map((post) => {
+        // Date format: DD/MM/YYYY, HH:MM:SS
         const dateStr = new Date(post.created_at).toLocaleString('en-GB');
 
+        // Card matches exactly: Red Underlined ID, Black tag, Grey posted text, Black body, NO green text.
         return `
         <div class="tos-card">
           <div class="card-header">
@@ -346,7 +399,6 @@
           <div><span class="tos-badge-black">-- USER OFFERING --</span></div>
           <div class="card-timestamp">Posted ${dateStr}</div>
           <div class="card-body-clean">${post.message}</div>
-          <div class="card-green-data">- ${post.author_name}</div>
         </div>
         `;
       }).join('');
@@ -354,7 +406,6 @@
 
     // --- Anonymous Post Submission ---
     async function submitOffering() {
-      const name = document.getElementById("offeringName").value.trim() || 'Anonymous';
       const text = document.getElementById("offeringText").value.trim();
 
       if (!text) {
@@ -363,14 +414,13 @@
       }
 
       const { error } = await db.from('offerings').insert([
-        { author_name: name, message: text }
+        { author_name: 'Anonymous', message: text }
       ]);
 
       if (error) {
         alert("Database Error: " + error.message);
       } else {
         document.getElementById("offeringText").value = '';
-        document.getElementById("offeringName").value = '';
         fetchOfferings();
       }
     }
@@ -400,6 +450,7 @@
 
       grid.innerHTML = data.map(doc => {
         const dateStr = doc.created_at ? new Date(doc.created_at).toLocaleString('en-GB') : 'Archive';
+
         return `
         <div class="tos-card">
           <div class="card-header">
