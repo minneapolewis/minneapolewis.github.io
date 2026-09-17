@@ -8,13 +8,13 @@
   <!-- Synchronized Dynamic Favicon -->
   <link id="dynamicFavicon" rel="icon" type="image/gif" href="globe.png">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <!-- Authentic VGA 437 Font from CDN -->
+  <link href="https://fonts.cdnfonts.com/css/perfect-dos-vga-437" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
+      /* Authentic TempleOS / VGA Color Palette */
       --tos-bg: #FFFFFF;
       --tos-blue: #0000AA;
       --tos-yellow: #FFFF55;
@@ -22,7 +22,8 @@
       --tos-green: #00AA00;
       --tos-black: #000000;
 
-      --font-pixel: 'VT323', monospace;
+      /* Real DOS VGA Font */
+      --font-pixel: 'Perfect DOS VGA 437', monospace;
       --font-clean: 'Courier New', Courier, monospace;
     }
 
@@ -42,7 +43,7 @@
       background-color: var(--tos-bg);
       color: var(--tos-black);
       font-family: var(--font-clean);
-      font-size: 1rem;
+      font-size: 1.05rem;
       margin: 0;
       padding: 0;
     }
@@ -50,7 +51,7 @@
     /* --- NAVBAR --- */
     .tos-navbar {
       background-color: var(--tos-blue);
-      padding: 4px 16px;
+      padding: 6px 16px;
       display: flex;
       gap: 24px;
       font-family: var(--font-pixel);
@@ -58,7 +59,7 @@
     .tos-navbar a {
       color: var(--tos-yellow);
       text-decoration: none;
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       letter-spacing: 1px;
       text-transform: uppercase;
       padding: 0 4px;
@@ -83,7 +84,7 @@
     .tos-home-blinker {
       color: var(--tos-blue);
       font-family: var(--font-pixel);
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       position: absolute;
       top: -14px;
       left: 8px;
@@ -105,7 +106,7 @@
       top: -12px;
       left: 50%;
       transform: translateX(-50%);
-      width: 140px;
+      width: 160px;
       height: 22px;
       display: flex;
       align-items: center;
@@ -138,9 +139,10 @@
     .txt-red:hover { text-decoration: underline; }
     .txt-green { color: var(--tos-green); }
 
+    /* Authentic Pixel Headers (Now used for Page Titles like reference) */
     .pixel-header {
       font-family: var(--font-pixel);
-      font-size: 2.2rem;
+      font-size: 1.8rem;
       font-weight: normal;
       color: var(--tos-red);
       margin: 0 0 16px 0;
@@ -152,7 +154,7 @@
       height: 128px;
       image-rendering: pixelated;
       image-rendering: crisp-edges;
-      filter: contrast(120%) saturate(110%);
+      filter: contrast(125%) saturate(110%);
       border: 2px solid var(--tos-black);
       margin-bottom: 16px;
     }
@@ -200,7 +202,7 @@
     .section-title {
       font-family: var(--font-pixel);
       color: var(--tos-red);
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       border-bottom: 1px solid var(--tos-red);
       margin: 24px 0 16px 0;
       padding-bottom: 4px;
@@ -290,7 +292,7 @@
       <div style="margin-top: 20px; line-height: 1.4;">
         <img id="randomHomeGif" src="globe.png" alt="Retro Icon" class="c64-filter" />
 
-        <h1 class="pixel-header">Welcome to the Online Temple!</h1>
+        <h1 class="pixel-header" style="font-size: 2rem;">Welcome to the Online Temple!</h1>
 
         <p style="margin: 0 0 8px 0;">Divine Intellect</p>
         <p style="margin: 0 0 8px 0;">A place to do offerings to talk to God.</p>
