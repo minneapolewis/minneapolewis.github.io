@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>minne@polewis</title>
 
+  <!-- GIF Favicon (Upload your animation.gif to GitHub) -->
+  <link rel="icon" href="animation.gif" type="image/gif">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
@@ -133,8 +136,8 @@
     .page-section { display: none; text-align: left; }
     .page-section.active { display: block; }
 
-    /* ONLY HOME IS CENTERED */
-    #page-HOME { text-align: center; }
+    /* CENTERED PAGES */
+    #page-HOME, #page-ARCHIVE { text-align: center; }
 
     /* General text coloring */
     .txt-red { color: var(--tos-red); text-decoration: none; }
@@ -148,6 +151,17 @@
       font-weight: normal;
       color: var(--tos-red);
       margin: 0 0 16px 0;
+    }
+
+    /* --- COMMODORE 64 / RETRO CRT FILTER FOR HOME IMAGE --- */
+    .c64-filter {
+      width: 128px;
+      height: 128px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      filter: contrast(120%) saturate(110%);
+      border: 2px solid var(--tos-black);
+      margin-bottom: 16px;
     }
 
     /* --- FORM ELEMENTS (Clean Monospace) --- */
@@ -188,7 +202,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
       gap: 16px;
-      text-align: left; /* Ensure cards align left even on home page */
+      text-align: left;
     }
     .tos-card {
       border: 2px solid var(--tos-black);
@@ -265,7 +279,8 @@
     <!-- ========================================== -->
     <div id="page-HOME" class="page-section active">
       <div style="margin-top: 20px; line-height: 1.4;">
-        <img src="globe.png" alt="Globe" style="width: 128px; height: 128px; image-rendering: pixelated; margin-bottom: 16px;" onerror="this.style.display='none'" />
+        <!-- Home Picture with C64 / Retro Filter (Point to your animation.gif or globe.gif) -->
+        <img src="animation.gif" alt="Retro Icon" class="c64-filter" onerror="this.src='globe.png'" />
 
         <h1 class="pixel-header">Welcome to the Online Temple!</h1>
 
@@ -279,7 +294,7 @@
 
       <div class="section-title" style="text-align: left; margin-top: 40px;">Latest Offerings</div>
       <div class="results-grid" id="homeOfferingsGrid">
-        <!-- Loaded dynamically via fetchOfferings() -->
+        <!-- Loaded dynamically -->
       </div>
 
       <div style="margin-top: 30px;">
@@ -288,12 +303,12 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- PAGE: ARCHIVE (Search Database) -->
+    <!-- PAGE: ARCHIVE (Search Database - Centered) -->
     <!-- ========================================== -->
     <div id="page-ARCHIVE" class="page-section">
       <h2 class="pixel-header">Archive</h2>
 
-      <div style="margin: 20px 0 40px 0; max-width: 600px;">
+      <div style="margin: 20px auto 40px auto; max-width: 600px;">
         <input type="text" id="searchInput" class="tos-input" placeholder='Search OCR archive... (supports "exact match" and -exclude)' />
 
         <!-- Filter Area -->
@@ -307,7 +322,7 @@
         <button class="tos-btn" onclick="executeSearch()">[ SEARCH ]</button>
       </div>
 
-      <div class="section-title">Archive Search Results</div>
+      <div class="section-title" style="text-align: left;">Archive Search Results</div>
       <div class="results-grid" id="searchResultsGrid">
         <!-- Results will render here -->
       </div>
@@ -431,7 +446,6 @@
         return;
       }
 
-      // Function to build HTML for a post
       const buildCard = (post, isAnon) => {
         const dateStr = new Date(post.created_at).toLocaleString('en-GB');
         const badgeHTML = isAnon ? `<span class="tos-badge-red">(Anon)</span>` : '';
@@ -448,12 +462,10 @@
         `;
       };
 
-      // Populate Offerings Page (All 50)
       if(grid) {
         grid.innerHTML = data.map(post => buildCard(post, true)).join('');
       }
 
-      // Populate Home Page (Only first 4)
       if(homeGrid) {
         homeGrid.innerHTML = data.slice(0, 4).map(post => buildCard(post, true)).join('');
       }
@@ -470,7 +482,7 @@
         alert("Database Error: " + error.message);
       } else {
         document.getElementById("offeringText").value = '';
-        fetchOfferings(); // Refresh grids
+        fetchOfferings();
       }
     }
 
@@ -484,10 +496,8 @@
 
       grid.innerHTML = `<div style="font-family:var(--font-pixel); font-size:1.5rem; color:var(--tos-red);">SCANNING...</div>`;
 
-      // Build the query using .textSearch with websearch type (allows quotes, minus signs)
       let dbQuery = db.from('documents').select('*').textSearch('ocr_text', query, { type: 'websearch' });
 
-      // Apply type filter if not 'ALL'
       if (filter !== 'ALL') {
         dbQuery = dbQuery.eq('type', filter);
       }
