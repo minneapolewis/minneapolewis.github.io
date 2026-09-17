@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>minne@polewis</title>
 
-  <!-- GIF Favicon (Upload your animation.gif to GitHub) -->
-  <link rel="icon" href="animation.gif" type="image/gif">
+  <!-- Dynamic Random GIF Favicon -->
+  <link id="dynamicFavicon" rel="icon" type="image/gif" href="globe.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -279,8 +279,8 @@
     <!-- ========================================== -->
     <div id="page-HOME" class="page-section active">
       <div style="margin-top: 20px; line-height: 1.4;">
-        <!-- Home Picture with C64 / Retro Filter (Point to your animation.gif or globe.gif) -->
-        <img src="animation.gif" alt="Retro Icon" class="c64-filter" onerror="this.src='globe.png'" />
+        <!-- Random Home GIF with C64 Filter -->
+        <img id="randomHomeGif" src="globe.png" alt="Retro Icon" class="c64-filter" />
 
         <h1 class="pixel-header">Welcome to the Online Temple!</h1>
 
@@ -383,12 +383,34 @@
 
   </div>
 
-  <!-- JAVASCRIPT: Navigation & Database Logic -->
+  <!-- JAVASCRIPT: Navigation, Random GIFs & Database Logic -->
   <script>
     // --- Supabase Setup ---
     const SUPABASE_URL = "https://workywiidpruyjmxlodk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_QP3KTKnmSZr7OVc8Yoka5w_VcB48hNV";
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // --- Random GIF Array ---
+    const gifList = [
+      "90s.gif", "afro.gif", "batman.gif", "bigheadman.gif", "bigheadmanupsidedown.gif",
+      "clown.gif", "eye.gif", "face.gif", "fed.gif", "fish.gif", "fogh.gif",
+      "henryV111.gif", "impman.gif", "jester.gif", "kungfumaster.gif", "legend.gif",
+      "sexyman.gif", "snake.gif", "spinningbadger.gif", "stitch.gif", "streetwalker.gif",
+      "succubus.gif", "sumo.gif"
+    ];
+
+    // --- On Load: Randomize Favicon & Home Image + Fetch Offerings ---
+    window.addEventListener('DOMContentLoaded', () => {
+      const getRandomGif = () => gifList[Math.floor(Math.random() * gifList.length)];
+
+      const favicon = document.getElementById("dynamicFavicon");
+      const homeImg = document.getElementById("randomHomeGif");
+
+      if (favicon) favicon.href = getRandomGif();
+      if (homeImg) homeImg.src = getRandomGif();
+
+      fetchOfferings();
+    });
 
     // --- Spinning Entropy Timer ---
     setInterval(() => {
@@ -396,9 +418,6 @@
         document.getElementById('timerDisplay').innerText = Date.now() + Math.floor(Math.random() * 1000);
       }
     }, 50);
-
-    // Fetch offerings immediately on page load so Home page is populated
-    window.onload = () => { fetchOfferings(); };
 
     // --- Navigation Logic ---
     function navigate(pageId, route) {
