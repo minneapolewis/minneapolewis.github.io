@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Online Temple - Archive System</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=VT323&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --tos-bg: #FFFFFF;
+      --tos-blue: #0000AA;
+      --tos-yellow: #FFFF55;
+      --tos-red: #AA0000;
+      --tos-green: #00AA00;
+      --tos-black: #000000;
+      --font-pixel: 'VT323', monospace;
+      --font-clean: 'Inter', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background-color: var(--tos-bg);
+      color: var(--tos-black);
+      font-family: var(--font-pixel);
+      margin: 0;
+      padding: 0;
+    }
+
+    /* --- NAVBAR --- */
+    .tos-navbar {
+      background-color: var(--tos-blue);
+      padding: 4px 16px;
+      display: flex;
+      gap: 24px;
+    }
+
+    .tos-navbar a {
+      color: var(--tos-yellow);
+      text-decoration: none;
+      font-size: 1.4rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 0 4px;
+      cursor: pointer;
+    }
+
+    .tos-navbar a:hover { text-decoration: underline; }
+    .tos-navbar a.active {
+      background-color: var(--tos-yellow);
+      color: var(--tos-blue);
+      text-decoration: none;
+    }
+
+    /* --- BORDER CONTAINER --- */
+    .tos-frame {
+      border: 3px double var(--tos-blue);
+      margin: 20px;
+      padding: 16px;
+      min-height: calc(100vh - 80px);
+      position: relative;
+    }
+
+    .tos-home-blinker {
+      color: var(--tos-blue);
+      font-size: 1.3rem;
+      position: absolute;
+      top: -14px;
+      left: 8px;
+      background: white;
+      padding: 0 4px;
+      animation: crtBlink 1s steps(1) infinite;
+      text-transform: uppercase;
+    }
+
+    @keyframes crtBlink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .tos-route-pill {
+      background-color: var(--tos-blue);
+      color: white;
+      font-size: 1.1rem;
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .tos-route-pill marquee { width: 100%; line-height: 1; }
+
+    .tos-left-vertical-text {
+      color: var(--tos-blue);
+      font-size: 1.1rem;
+      position: absolute;
+      top: 10px;
+      left: -12px;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      line-height: 0.85;
+      padding: 4px 0;
+      text-align: center;
+      width: 20px;
+    }
+
+    /* --- PAGE SECTIONS --- */
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+
+    /* Hero / General styling */
+    .hero-section { text-align: center; margin-top: 20px; font-size: 1.3rem; line-height: 1.4; }
+    .hero-globe { width: 128px; height: 128px; image-rendering: pixelated; margin-bottom: 16px; }
+    .txt-red { color: var(--tos-red); text-decoration: none; }
+    .txt-red:hover { text-decoration: underline; }
+
+    /* Inputs & Buttons */
+    .tos-input, .tos-textarea {
+      font-family: var(--font-pixel);
+      font-size: 1.4rem;
+      border: 2px solid var(--tos-black);
+      padding: 4px 8px;
+      outline: none;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 8px;
+    }
+    .tos-textarea { resize: vertical; min-height: 80px; font-family: var(--font-clean); font-size: 1rem; }
+    .tos-btn {
+      font-family: var(--font-pixel);
+      font-size: 1.4rem;
+      background: white;
+      border: 2px solid var(--tos-black);
+      cursor: pointer;
+      padding: 4px 12px;
+    }
+    .tos-btn:hover { background: var(--tos-black); color: white; }
+
+    /* Results / Cards */
+    .section-title {
+      color: var(--tos-red);
+      font-size: 1.6rem;
+      border-bottom: 1px solid var(--tos-red);
+      margin-bottom: 16px;
+      padding-bottom: 4px;
+    }
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .tos-card { border: 2px solid var(--tos-black); background: white; padding: 8px; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .card-id { color: var(--tos-red); font-size: 1.4rem; font-weight: bold; }
+    .tos-badge-black { background-color: var(--tos-black); color: #FFFFFF; font-size: 1.1rem; padding: 1px 6px; display: inline-block; margin-bottom: 6px; }
+    .tos-badge-red { background-color: var(--tos-red); color: #FFFFFF; font-size: 1rem; padding: 0 4px; }
+    .card-timestamp { color: #333; font-size: 1.1rem; margin-bottom: 12px; }
+    .card-body-clean { font-family: var(--font-clean); font-size: 0.95rem; line-height: 1.4; color: #111; margin-bottom: 12px; white-space: pre-wrap; }
+    .card-green-data { color: var(--tos-green); font-size: 1.25rem; word-break: break-all; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div class="tos-navbar" id="navbar">
+    <a onclick="navigate('HOME', '/')" class="active">HOME</a>
+    <a onclick="navigate('ARCHIVE', '/archive')">ARCHIVE</a>
+    <a onclick="navigate('OFFERINGS', '/offerings')">OFFERINGS</a>
+    <a onclick="navigate('ABOUT', '/about')">ABOUT</a>
+  </div>
+
+  <div class="tos-frame">
+    <!-- DYNAMIC BORDER ELEMENTS -->
+    <div class="tos-home-blinker" id="blinkerText">HOME</div>
+    <div class="tos-route-pill">
+      <marquee scrollamount="3" id="routeMarquee">ROUTE: /</marquee>
+    </div>
+    <div class="tos-left-vertical-text">
+      <span>F</span><span>p</span><span>a</span><span>g</span><span>e</span>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PAGE: HOME -->
+    <!-- ========================================== -->
+    <div id="page-HOME" class="page-section active">
+      <div class="hero-section">
+        <img src="globe.png" alt="Globe" class="hero-globe" onerror="this.style.display='none'" />
+        <h1 class="txt-red" style="font-size: 2rem; margin: 0 0 16px 0;">Welcome to Minneapolewis!</h1>
+        <p style="margin-bottom: 8px;"></p>
+        <p style="margin-bottom: 8px;"></p>
+        <p style="margin-bottom: 8px;">
+          <a href="#" class="txt-red">
+        </p>
+        <p style="margin-top: 16px;">
+          <a href="#" class="txt-red"></a>
+        </p>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PAGE: ARCHIVE (Search Database) -->
+    <!-- ========================================== -->
+    <div id="page-ARCHIVE" class="page-section">
+      <div style="text-align: center; margin: 30px 0;">
+        <input type="text" id="searchInput" class="tos-input" placeholder="Search OCR archive..." />
+        <br>
+        <button class="tos-btn" onclick="executeSearch()">[ SEARCH ]</button>
+      </div>
+      <div class="section-title">Archive Search Results</div>
+      <div class="results-grid" id="searchResultsGrid">
+        <!-- Results will render here -->
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PAGE: OFFERINGS (Anonymous Message Board) -->
+    <!-- ========================================== -->
+    <div id="page-OFFERINGS" class="page-section">
+      <div style="margin-bottom: 24px; text-align: center;">
+        <h2 class="txt-red" style="margin-bottom: 12px;">Submit an Offering</h2>
+        <input type="text" id="offeringName" class="tos-input" placeholder="Name (Anonymous)" /><br>
+        <textarea id="offeringText" class="tos-textarea" placeholder="Type your message here..."></textarea><br>
+        <button class="tos-btn" onclick="submitOffering()">[ SUBMIT OFFERING ]</button>
+      </div>
+
+      <div class="section-title">Latest Offerings</div>
+      <div class="results-grid" id="offeringsGrid">
+        <!-- Example Post -->
+        <div class="tos-card">
+          <div class="card-header">
+            <span class="card-id">#1</span>
+            <span class="tos-badge-red">(Anon)</span>
+          </div>
+          <div><span class="tos-badge-black">-- USER OFFERING --</span></div>
+          <div class="card-timestamp"></div>
+          <div class="card-body-clean"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PAGE: ABOUT -->
+    <!-- ========================================== -->
+    <div id="page-ABOUT" class="page-section">
+      <div class="section-title">About the Temple Archive</div>
+      <div style="font-family: var(--font-clean); font-size: 1.1rem; line-height: 1.6; max-width: 800px;">
+        <p>This system was designed to index and archive files and videos, making them fully searchable via an Optical Character Recognition (OCR) pipeline.</p>
+        <br>
+        <p>The interface pays homage to the design philosophy of TempleOS, prioritizing raw utilitarian layouts, unpretentious controls, and 16-color VGA aesthetics.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- JAVASCRIPT: Navigation & Database Logic -->
+  <script>
+    // --- Navigation Logic ---
+    function navigate(pageId, route) {
+      // 1. Update the flashing text and route marquee
+      document.getElementById('blinkerText').innerText = pageId;
+      document.getElementById('routeMarquee').innerText = `ROUTE: ${route}`;
+
+      // 2. Hide all pages, show the requested page
+      document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+      document.getElementById('page-' + pageId).classList.add('active');
+
+      // 3. Update the active class on the navbar
+      const links = document.querySelectorAll('.tos-navbar a');
+      links.forEach(link => {
+        if(link.innerText === pageId) link.classList.add('active');
+        else link.classList.remove('active');
+      });
+    }
+
+    // --- Supabase Setup ---
+    const SUPABASE_URL = "https://workywiidpruyjmxlodk.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_QP3KTKnmSZr7OVc8Yoka5w_VcB48hNV";
+
+    // --- Archive Search ---
+    async function executeSearch() {
+      const query = document.getElementById("searchInput").value.trim();
+      const grid = document.getElementById("searchResultsGrid");
+      if (!query) return;
+
+      grid.innerHTML = `<div style="font-size:1.5rem; color:var(--tos-red);">SCANNING...</div>`;
+
+      // Example DB call:
+      /*
+      const { data, error } = await db.from('documents').select('*').textSearch('ocr_text', query);
+      if (error || !data || data.length === 0) { grid.innerHTML = `NO MATCHES.`; return; }
+      */
+
+      // Mock result for visual testing:
+      grid.innerHTML = `
+        <div class="tos-card">
+          <div class="card-header">
+            <span class="card-id">#102</span>
+            <span class="tos-badge-red">(DB)</span>
+          </div>
+          <div><span class="tos-badge-black">-- OCR MATCH --</span></div>
+          <div class="card-timestamp">Found in Archive</div>
+          <div class="card-body-clean">Mock search result for "${query}". Replace with actual Supabase data mapping.</div>
+          <div class="card-green-data">[ OPEN FILE ]</div>
+        </div>`;
+    }
+
+    // --- Anonymous Post Submission ---
+    async function submitOffering() {
+      const name = document.getElementById("offeringName").value.trim() || 'Anonymous';
+      const text = document.getElementById("offeringText").value.trim();
+
+      if (!text) {
+        alert("Please enter a message.");
+        return;
+      }
+
+      // Example DB insertion (requires RLS to be set up allowing anonymous inserts)
+      /*
+      await db.from('offerings').insert([{ author_name: name, message: text }]);
+      fetchOfferings(); // Refresh the grid
+      */
+
+      alert(`Offering submitted by ${name}! (Connect Supabase to save)`);
+      document.getElementById("offeringText").value = ''; // clear box
+    }
+  </script>
+</body>
+</html>
